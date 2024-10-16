@@ -3,13 +3,14 @@ package com.obidia.movieapp.presentation.home
 import ItemTrendingFilm
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.EaseInQuart
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -115,8 +116,6 @@ fun HomeScreen(
 
     LaunchedEffect(
         key1 = uiState.value.categoryName,
-        key2 = uiState.value.isTvShow,
-        key3 = uiState.value.isMovie
     ) {
         if (uiState.value.categoryName != "Categories" && uiState.value.categoryName != null || !uiState.value.isMovie || !uiState.value.isTvShow) {
             action(HomeAction.ContentVisible(false))
@@ -236,7 +235,6 @@ fun CategoryView(
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
-                .animateContentSize(animationSpec = tween(durationMillis = 300))
                 .height(56.dp)
                 .drawBehind { drawRect(animatedColor) }
                 .padding(horizontal = 16.dp),
@@ -366,129 +364,195 @@ fun Content(
                 )
             }
 
-            if (isMovie) item {
-                MovieList(
-                    title = "Movie Now Playing",
-                    list = listMovieNowPlaying,
-                    modifier = Modifier
-                        .fillParentMaxHeight(0.3f)
-                        .animateItem(
-                            fadeInSpec = tween(400),
-                            fadeOutSpec = tween(400),
-                            placementSpec = tween(400)
-                        ),
-                )
-            }
-
-            if (isMovie) item {
-                MovieList(
-                    title = "Movie Popular",
-                    list = listMoviePopular,
-                    modifier = Modifier
-                        .fillParentMaxHeight(0.3f)
-                        .animateItem(
-                            fadeInSpec = tween(400),
-                            fadeOutSpec = tween(400),
-                            placementSpec = tween(400)
-                        ),
-                )
-            }
-
-            if (isMovie) item {
-                MovieList(
-                    title = "Movie Top Rated",
-                    list = listMovieTopRated,
-                    modifier = Modifier
-                        .fillParentMaxHeight(0.3f)
-                        .animateItem(
-                            fadeInSpec = tween(400),
-                            fadeOutSpec = tween(400),
-                            placementSpec = tween(400)
-                        ),
-                )
-            }
-
-            if (isTvShow) item {
-                MovieList(
-                    title = "Tv Airing Today",
-                    list = listTvTopAiring,
-                    modifier = Modifier
-                        .fillParentMaxHeight(0.3f)
-                        .animateItem(
-                            fadeInSpec = tween(400),
-                            fadeOutSpec = tween(400),
-                            placementSpec = tween(400)
-                        ),
-                )
-            }
-
-            if (isTvShow) item {
-                MovieList(
-                    title = "Tv Popular",
-                    list = listTvPopular,
-                    modifier = Modifier
-                        .fillParentMaxHeight(0.3f)
-                        .animateItem(
-                            fadeInSpec = tween(400),
-                            fadeOutSpec = tween(400),
-                            placementSpec = tween(400)
-                        ),
-                )
-            }
-
-            if (isTvShow) item {
-                MovieList(
-                    title = "Tv TopRated",
-                    list = listTvTopRated,
-                    modifier = Modifier
-                        .fillParentMaxHeight(0.3f)
-                        .animateItem(
-                            fadeInSpec = tween(400),
-                            fadeOutSpec = tween(400),
-                            placementSpec = tween(400)
-                        ),
-                )
+            item {
+                AnimatedVisibility(
+                    visible = isMovie, enter = slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(durationMillis = 500)
+                    ),
+                    exit = slideOutHorizontally(
+                        targetOffsetX = { it },
+                        animationSpec = tween(durationMillis = 500)
+                    )
+                ) {
+                    MovieList(
+                        title = "Movie Now Playing",
+                        list = listMovieNowPlaying,
+                        modifier = Modifier
+                            .fillParentMaxHeight(0.3f)
+                            .animateItem(),
+                    )
+                }
             }
 
             item {
-                Column(
-                    modifier = Modifier.fillParentMaxHeight(0.3f),
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .padding(horizontal = 8.dp)
-                            .padding(bottom = 4.dp, top = 20.dp),
-                        text = "Movie Trending",
-                        color = neutral5,
-                        fontFamily = robotoFamily,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp
+                AnimatedVisibility(
+                    visible = isMovie, enter = slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(durationMillis = 500)
+                    ),
+                    exit = slideOutHorizontally(
+                        targetOffsetX = { it },
+                        animationSpec = tween(durationMillis = 500)
                     )
+                ) {
+                    MovieList(
+                        title = "Movie Popular",
+                        list = listMoviePopular,
+                        modifier = Modifier
+                            .fillParentMaxHeight(0.3f)
+                            .animateItem(),
+                    )
+                }
+            }
 
-                    LazyRow(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        item { Spacer(modifier = Modifier.width(0.dp)) }
-                        when (val list = listTop10Movie.value) {
-                            is Resource.Error -> {}
-                            is Resource.Loading -> {}
-                            is Resource.Success -> {
-                                itemsIndexed(items = list.data) { number, data ->
-                                    ItemTrendingFilm(number = number + 1, model = data)
-                                }
-                            }
+            item {
+                AnimatedVisibility(
+                    visible = isMovie, enter = slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(durationMillis = 500)
+                    ),
+                    exit = slideOutHorizontally(
+                        targetOffsetX = { it },
+                        animationSpec = tween(durationMillis = 500)
+                    )
+                ) {
+                    MovieList(
+                        title = "Movie Top Rated",
+                        list = listMovieTopRated,
+                        modifier = Modifier
+                            .fillParentMaxHeight(0.3f)
+                            .animateItem(),
+                    )
+                }
+            }
 
-                            null -> {}
-                        }
+            item {
+                AnimatedVisibility(
+                    visible = isMovie && isTvShow, enter = slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(durationMillis = 500)
+                    ),
+                    exit = slideOutHorizontally(
+                        targetOffsetX = { it },
+                        animationSpec = tween(durationMillis = 500)
+                    )
+                ) {
+                    FilmListTrending(
+                        list = listTop10Movie,
+                        modifier = Modifier
+                            .fillParentMaxHeight(0.3f)
+                            .animateItem()
+                    )
+                }
+            }
 
-                        item { Spacer(modifier = Modifier.width(0.dp)) }
-                    }
+            item {
+                AnimatedVisibility(
+                    visible = isTvShow, enter = slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(durationMillis = 500)
+                    ),
+                    exit = slideOutHorizontally(
+                        targetOffsetX = { it },
+                        animationSpec = tween(durationMillis = 500)
+                    )
+                ) {
+                    MovieList(
+                        title = "Tv Airing Today",
+                        list = listTvTopAiring,
+                        modifier = Modifier
+                            .fillParentMaxHeight(0.3f)
+                            .animateItem(),
+                    )
+                }
+            }
+
+            item {
+                AnimatedVisibility(
+                    visible = isTvShow, enter = slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(durationMillis = 500)
+                    ),
+                    exit = slideOutHorizontally(
+                        targetOffsetX = { it },
+                        animationSpec = tween(durationMillis = 500)
+                    )
+                ) {
+                    MovieList(
+                        title = "Tv Popular",
+                        list = listTvPopular,
+                        modifier = Modifier
+                            .fillParentMaxHeight(0.3f)
+                            .animateItem(),
+                    )
+                }
+            }
+
+            item {
+                AnimatedVisibility(
+                    visible = isTvShow, enter = slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(durationMillis = 500)
+                    ),
+                    exit = slideOutHorizontally(
+                        targetOffsetX = { it },
+                        animationSpec = tween(durationMillis = 500)
+                    )
+                ) {
+                    MovieList(
+                        title = "Tv TopRated",
+                        list = listTvTopRated,
+                        modifier = Modifier
+                            .fillParentMaxHeight(0.3f)
+                            .animateItem(),
+                    )
                 }
             }
 
             item {
                 Spacer(modifier = Modifier.height(16.dp))
             }
+        }
+    }
+}
+
+@Composable
+fun FilmListTrending(
+    text: String = "Movie Trending",
+    modifier: Modifier, list: State<Resource<List<ItemModel>>?>
+) {
+    Column(
+        modifier = modifier,
+    ) {
+        Text(
+            modifier = Modifier
+                .padding(horizontal = 8.dp)
+                .padding(bottom = 4.dp, top = 20.dp),
+            text = text,
+            color = neutral5,
+            fontFamily = robotoFamily,
+            fontWeight = FontWeight.Bold,
+            fontSize = 18.sp
+        )
+
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            item { Spacer(modifier = Modifier.width(0.dp)) }
+            when (val data = list.value) {
+                is Resource.Error -> {}
+                is Resource.Loading -> {}
+                is Resource.Success -> {
+                    itemsIndexed(items = data.data) { number, item ->
+                        ItemTrendingFilm(number = number + 1, model = item)
+                    }
+                }
+
+                null -> {}
+            }
+
+            item { Spacer(modifier = Modifier.width(0.dp)) }
         }
     }
 }
@@ -537,7 +601,7 @@ fun HeaderMovieTrending(
 @Composable
 fun MovieList(
     title: String, list: LazyPagingItems<ItemModel>,
-    modifier: Modifier = Modifier,
+    modifier: Modifier,
 ) {
     Column(
         modifier = modifier

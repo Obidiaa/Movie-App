@@ -236,6 +236,8 @@ class HomeViewModel @Inject constructor(
                 _uiState.value = uiState.value.copy(
                     isMovie = false
                 )
+
+                getTvHeader(null)
             }
 
             is HomeAction.OnDismissCategoryDialog -> {

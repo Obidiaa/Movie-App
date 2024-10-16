@@ -70,8 +70,8 @@ interface ApiServices {
     @GET("discover/tv")
     suspend fun getTop10Tv(
         @Query("page") page: Int = 1,
-        @Query("release_date.gte") minDate: String,
-        @Query("release_date.lte") maxDate: String,
+        @Query("air_date.gte") minDate: String,
+        @Query("air_date.lte") maxDate: String,
         @Query("with_genres") genres: String? = null,
         @Query("sort_by") sortBy: String = "vote_average.desc",
     ): Response<TvListResponse>

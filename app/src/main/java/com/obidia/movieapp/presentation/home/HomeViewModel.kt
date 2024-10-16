@@ -58,6 +58,7 @@ class HomeViewModel @Inject constructor(
 
         if (_uiState.value.isTvShow && _uiState.value.isMovie) {
             getTop10Movie()
+            getTop10Tv()
         }
     }
 
@@ -187,6 +188,18 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    private fun getTop10Tv() {
+        viewModelScope.launch {
+            useCase.getTop10Tv()
+                .stateIn(this, SharingStarted.WhileSubscribed(5000), null)
+                .onEach {
+                    _filmState.value.listTop10Tv.value = it
+                }.catch {
+                    _filmState.value.listTop10Tv.value = Resource.Error(it)
+                }.collect()
+        }
+    }
+
     fun homeAction(action: HomeAction) {
         when (action) {
             is HomeAction.TopAppBarState -> _uiState.value = uiState.value.copy(
@@ -289,6 +302,11 @@ data class FilmUiState(
     val listTvTopRated: Flow<PagingData<ItemModel>> = emptyFlow(),
     var filmHeader: MutableStateFlow<Resource<ItemModel>?> = MutableStateFlow(null),
     var listTop10Movie: MutableStateFlow<Resource<List<ItemModel>>?> = MutableStateFlow(
+        Resource.Success(
+            listOf()
+        )
+    ),
+    var listTop10Tv: MutableStateFlow<Resource<List<ItemModel>>?> = MutableStateFlow(
         Resource.Success(
             listOf()
         )

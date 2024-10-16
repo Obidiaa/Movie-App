@@ -29,4 +29,6 @@ interface UseCase {
     fun getMovieHeader(category: String?): Flow<Resource<ItemModel>>
 
     fun getTop10Movie(): Flow<Resource<List<ItemModel>>>
+
+    fun getTop10Tv(): Flow<Resource<List<ItemModel>>>
 }

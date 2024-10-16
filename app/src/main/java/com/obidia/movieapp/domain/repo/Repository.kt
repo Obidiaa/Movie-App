@@ -29,4 +29,6 @@ interface Repository {
     fun getMovieHeader(category: String?): Flow<Resource<ItemModel>>
 
     fun getTop10Movie(category: String?): Flow<Resource<List<ItemModel>>>
+
+    fun getTop10Tv(): Flow<Resource<List<ItemModel>>>
 }

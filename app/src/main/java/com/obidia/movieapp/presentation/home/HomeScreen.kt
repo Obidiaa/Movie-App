@@ -143,7 +143,8 @@ fun HomeScreen(
                 listTvPopular = filmUiState.value.listTvPopular.collectAsLazyPagingItems(),
                 listTvTopRated = filmUiState.value.listTvTopRated.collectAsLazyPagingItems(),
                 filmHeader = filmUiState.value.filmHeader.collectAsStateWithLifecycle(),
-                listTop10Movie = filmUiState.value.listTop10Movie.collectAsStateWithLifecycle()
+                listTop10Movie = filmUiState.value.listTop10Movie.collectAsStateWithLifecycle(),
+                listTop10Tv = filmUiState.value.listTop10Tv.collectAsStateWithLifecycle()
             )
 
             BoxTransition(isContentVisible = uiState.value.isVisibleContent)
@@ -333,7 +334,8 @@ fun Content(
     listTvPopular: LazyPagingItems<ItemModel>,
     listTvTopRated: LazyPagingItems<ItemModel>,
     filmHeader: State<Resource<ItemModel>?>,
-    listTop10Movie: State<Resource<List<ItemModel>>?>
+    listTop10Movie: State<Resource<List<ItemModel>>?>,
+    listTop10Tv: State<Resource<List<ItemModel>>?>
 ) {
     AnimatedVisibility(
         visible = contentVisible,
@@ -506,6 +508,27 @@ fun Content(
                         modifier = Modifier
                             .fillParentMaxHeight(0.3f)
                             .animateItem(),
+                    )
+                }
+            }
+
+            item {
+                AnimatedVisibility(
+                    visible = isMovie && isTvShow, enter = slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(durationMillis = 500)
+                    ),
+                    exit = slideOutHorizontally(
+                        targetOffsetX = { it },
+                        animationSpec = tween(durationMillis = 500)
+                    )
+                ) {
+                    FilmListTrending(
+                        text = "TV Trending",
+                        list = listTop10Tv,
+                        modifier = Modifier
+                            .fillParentMaxHeight(0.3f)
+                            .animateItem()
                     )
                 }
             }

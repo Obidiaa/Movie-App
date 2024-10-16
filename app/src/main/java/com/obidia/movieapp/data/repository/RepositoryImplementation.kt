@@ -227,4 +227,35 @@ class RepositoryImplementation @Inject constructor(
             }
         }
     }
+
+    override fun getTop10Tv(): Flow<Resource<List<ItemModel>>> {
+        return flow {
+            emit(Resource.Loading)
+
+            try {
+                val maxDate = formatter.format(Date())
+
+                val minDate = formatter.format(
+                    calendar.run {
+                        add(Calendar.DAY_OF_YEAR, -7)
+                        time
+                    }
+                )
+
+                val response = remoteDataSource.getTop10Tv(maxDate, minDate)
+                response.body()?.let {
+                    val data = TvItemResponse.transform(it.results)
+                    if (data.isEmpty()) {
+                        throw Throwable()
+                    } else {
+                        emit(Resource.Success(data.subList(0, 10)))
+                    }
+                } ?: kotlin.run {
+                    throw HttpException(response)
+                }
+            } catch (e: Throwable) {
+                emit(Resource.Error(e))
+            }
+        }
+    }
 }

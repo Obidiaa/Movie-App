@@ -112,4 +112,14 @@ class RemoteDataSource @Inject constructor(
             minDate = minDate
         )
     }
+
+    suspend fun getTop10Tv(
+        maxDate: String,
+        minDate: String,
+    ): Response<TvListResponse> {
+        return apiServices.getTop10Tv(
+            maxDate = maxDate,
+            minDate = minDate
+        )
+    }
 }

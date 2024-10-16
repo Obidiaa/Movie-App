@@ -55,6 +55,10 @@ class HomeViewModel @Inject constructor(
             getTvAiringToday(category)
             getTvTopRated(category)
         }
+
+        if (_uiState.value.isTvShow && _uiState.value.isMovie) {
+            getTop10Movie()
+        }
     }
 
     private fun getMoviesNowPlaying(category: String?) {
@@ -161,11 +165,24 @@ class HomeViewModel @Inject constructor(
 
     private fun getMovieHeader(category: String?) {
         viewModelScope.launch {
-            useCase.getMovieHeader(category).stateIn(this, SharingStarted.WhileSubscribed(5000), null)
+            useCase.getMovieHeader(category)
+                .stateIn(this, SharingStarted.WhileSubscribed(5000), null)
                 .onEach {
                     _filmState.value.filmHeader.value = it
                 }.catch {
                     _filmState.value.filmHeader.value = Resource.Error(it)
+                }.collect()
+        }
+    }
+
+    private fun getTop10Movie() {
+        viewModelScope.launch {
+            useCase.getTop10Movie()
+                .stateIn(this, SharingStarted.WhileSubscribed(5000), null)
+                .onEach {
+                    _filmState.value.listTop10Movie.value = it
+                }.catch {
+                    _filmState.value.listTop10Movie.value = Resource.Error(it)
                 }.collect()
         }
     }
@@ -268,7 +285,12 @@ data class FilmUiState(
     val listTvAiringToday: Flow<PagingData<ItemModel>> = emptyFlow(),
     val listTvPopular: Flow<PagingData<ItemModel>> = emptyFlow(),
     val listTvTopRated: Flow<PagingData<ItemModel>> = emptyFlow(),
-    var filmHeader: MutableStateFlow<Resource<ItemModel>?> = MutableStateFlow(null)
+    var filmHeader: MutableStateFlow<Resource<ItemModel>?> = MutableStateFlow(null),
+    var listTop10Movie: MutableStateFlow<Resource<List<ItemModel>>?> = MutableStateFlow(
+        Resource.Success(
+            listOf()
+        )
+    )
 )
 
 sealed class HomeAction {

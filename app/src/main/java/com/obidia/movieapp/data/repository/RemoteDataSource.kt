@@ -100,4 +100,16 @@ class RemoteDataSource @Inject constructor(
             maxDate = maxDate
         )
     }
+
+    suspend fun getTop10Movie(
+        category: String?,
+        maxDate: String,
+        minDate: String,
+    ): Response<MovieListResponse> {
+        return apiServices.getTop10Movie(
+            genres = category,
+            maxDate = maxDate,
+            minDate = minDate
+        )
+    }
 }

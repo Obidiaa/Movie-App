@@ -50,4 +50,8 @@ class UseCaseImplementation @Inject constructor(
     override fun getMovieHeader(category: String?): Flow<Resource<ItemModel>> {
         return repository.getMovieHeader(category)
     }
+
+    override fun getTop10Movie(): Flow<Resource<List<ItemModel>>> {
+        return repository.getTop10Movie(null)
+    }
 }

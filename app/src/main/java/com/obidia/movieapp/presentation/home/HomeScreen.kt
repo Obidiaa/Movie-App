@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -142,7 +143,8 @@ fun HomeScreen(
                 listTvTopAiring = filmUiState.value.listTvAiringToday.collectAsLazyPagingItems(),
                 listTvPopular = filmUiState.value.listTvPopular.collectAsLazyPagingItems(),
                 listTvTopRated = filmUiState.value.listTvTopRated.collectAsLazyPagingItems(),
-                filmHeader = filmUiState.value.filmHeader.collectAsStateWithLifecycle()
+                filmHeader = filmUiState.value.filmHeader.collectAsStateWithLifecycle(),
+                listTop10Movie = filmUiState.value.listTop10Movie.collectAsStateWithLifecycle()
             )
 
             BoxTransition(isContentVisible = uiState.value.isVisibleContent)
@@ -332,7 +334,8 @@ fun Content(
     listTvTopAiring: LazyPagingItems<ItemModel>,
     listTvPopular: LazyPagingItems<ItemModel>,
     listTvTopRated: LazyPagingItems<ItemModel>,
-    filmHeader: State<Resource<ItemModel>?>
+    filmHeader: State<Resource<ItemModel>?>,
+    listTop10Movie: State<Resource<List<ItemModel>>?>
 ) {
     AnimatedVisibility(
         visible = contentVisible,
@@ -466,9 +469,18 @@ fun Content(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         item { Spacer(modifier = Modifier.width(0.dp)) }
-                        items(10) {
-                            ItemTrendingFilm(number = it + 1, model = ItemModel(0, "", ""))
+                        when (val list = listTop10Movie.value) {
+                            is Resource.Error -> {}
+                            is Resource.Loading -> {}
+                            is Resource.Success -> {
+                                itemsIndexed(items = list.data) { number, data ->
+                                    ItemTrendingFilm(number = number + 1, model = data)
+                                }
+                            }
+
+                            null -> {}
                         }
+
                         item { Spacer(modifier = Modifier.width(0.dp)) }
                     }
                 }

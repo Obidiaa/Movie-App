@@ -20,6 +20,15 @@ interface ApiServices {
     ): MovieListResponse
 
     @GET("discover/movie")
+    suspend fun getTop10Movie(
+        @Query("page") page: Int = 1,
+        @Query("release_date.gte") minDate: String,
+        @Query("release_date.lte") maxDate: String,
+        @Query("with_genres") genres: String? = null,
+        @Query("sort_by") sortBy: String = "vote_average.desc",
+    ): Response<MovieListResponse>
+
+    @GET("discover/movie")
     suspend fun getMoviePopular(
         @Query("page") page: Int,
         @Query("sort_by") sortBy: String = "popularity.desc",

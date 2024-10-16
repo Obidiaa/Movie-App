@@ -1,14 +1,11 @@
 package com.obidia.movieapp.data.paging
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.obidia.movieapp.data.calendar
 import com.obidia.movieapp.data.formatter
 import com.obidia.movieapp.data.remote.response.TvItemResponse
 import com.obidia.movieapp.data.repository.RemoteDataSource
 import com.obidia.movieapp.domain.model.ItemModel
-import java.util.Calendar
 import java.util.Date
 import javax.inject.Inject
 import javax.inject.Singleton

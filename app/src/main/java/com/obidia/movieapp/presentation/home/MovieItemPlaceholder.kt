@@ -11,7 +11,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.obidia.movieapp.presentation.component.shimmerEffect
 import com.obidia.movieapp.ui.theme.neutral2
-import com.obidia.movieapp.ui.theme.neutral5
 
 @Composable
 fun MovieItemPlaceholder() {

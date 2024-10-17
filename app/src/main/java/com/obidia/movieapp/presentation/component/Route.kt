@@ -8,4 +8,4 @@ sealed interface Route
 data object HomeScreenRoute : Route
 
 @Serializable
-data object CategoryScreenRoute : Route
+data object SearchScreenRoute : Route

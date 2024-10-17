@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.obidia.movieapp.presentation.component.HomeScreenRoute
 import com.obidia.movieapp.presentation.home.homeScreenRoute
+import com.obidia.movieapp.presentation.search.searchScreenRout
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -32,6 +33,7 @@ class MainActivity : ComponentActivity() {
             startDestination = startDestination
         ) {
             homeScreenRoute(navigate = ::navigate)
+            searchScreenRout(navigate = ::navigate)
         }
     }
 

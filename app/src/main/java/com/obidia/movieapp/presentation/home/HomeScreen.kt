@@ -68,14 +68,7 @@ import com.obidia.movieapp.domain.model.ItemModel
 import com.obidia.movieapp.presentation.category.CategoryDialog
 import com.obidia.movieapp.presentation.component.HomeScreenRoute
 import com.obidia.movieapp.presentation.component.Route
-import com.obidia.movieapp.presentation.component.robotoFamily
 import com.obidia.movieapp.presentation.component.shimmerEffect
-import com.obidia.movieapp.ui.theme.blackAlpha8
-import com.obidia.movieapp.ui.theme.neutral0
-import com.obidia.movieapp.ui.theme.neutral4
-import com.obidia.movieapp.ui.theme.neutral5
-import com.obidia.movieapp.ui.theme.whiteAlpha3
-import com.obidia.movieapp.ui.theme.whiteAlpha8
 import kotlinx.coroutines.delay
 
 fun NavGraphBuilder.homeScreenRoute(navigate: (Route) -> Unit) {
@@ -195,7 +188,7 @@ fun TopAppBar(
     onClickTvShow: () -> Unit
 ) {
     val animatedColor by animateColorAsState(
-        targetValue = if (isFirstItemVisible) Color.Transparent else blackAlpha8,
+        targetValue = if (isFirstItemVisible) Color.Transparent else Color.Red,
         label = "",
         animationSpec = tween(500, easing = FastOutLinearInEasing)
     )
@@ -246,7 +239,7 @@ fun CategoryView(
                 Icon(
                     modifier = Modifier
                         .border(
-                            border = BorderStroke(1.dp, color = whiteAlpha3),
+                            border = BorderStroke(1.dp, color = Color.Red),
                             shape = RoundedCornerShape(200.dp)
                         )
                         .padding(4.dp)
@@ -260,7 +253,7 @@ fun CategoryView(
                         ),
                     imageVector = ImageVector.vectorResource(R.drawable.ic_close),
                     contentDescription = "",
-                    tint = whiteAlpha8
+                    tint = Color.Red
                 )
             }
 
@@ -310,7 +303,7 @@ fun BoxTransition(
     isContentVisible: Boolean
 ) {
     val animatedColorBox by animateColorAsState(
-        targetValue = if (!isContentVisible) neutral0 else Color.Transparent,
+        targetValue = if (!isContentVisible) Color.Red else Color.Transparent,
         label = "",
         animationSpec = tween(500)
     )
@@ -350,7 +343,7 @@ fun Content(
     ) {
         LazyColumn(
             modifier = Modifier
-                .background(color = blackAlpha8),
+                .background(color = Color.Red),
             state = lazyListState
         ) {
             item {
@@ -553,8 +546,7 @@ fun FilmListTrending(
                 .padding(horizontal = 8.dp)
                 .padding(bottom = 4.dp, top = 20.dp),
             text = text,
-            color = neutral5,
-            fontFamily = robotoFamily,
+            color = Color.Red,
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp
         )
@@ -610,7 +602,7 @@ fun HeaderMovieTrending(
                     contentScale = ContentScale.FillWidth,
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(color = neutral4, shape = RoundedCornerShape(12.dp))
+                        .background(color = Color.Red, shape = RoundedCornerShape(12.dp))
                         .clip(RoundedCornerShape(12.dp)),
                     contentDescription = "image"
                 )
@@ -634,8 +626,7 @@ fun MovieList(
                 .padding(horizontal = 8.dp)
                 .padding(bottom = 4.dp, top = 20.dp),
             text = title,
-            color = neutral5,
-            fontFamily = robotoFamily,
+            color = Color.Red,
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp
         )
@@ -680,10 +671,9 @@ fun TopBar(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                color = neutral5,
+                color = Color.Red,
                 modifier = Modifier.padding(vertical = 12.dp, horizontal = 16.dp),
                 text = "For Obid",
-                fontFamily = robotoFamily,
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp
             )
@@ -693,13 +683,13 @@ fun TopBar(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Icon(
-                    tint = neutral5,
+                    tint = Color.Red,
                     imageVector = ImageVector.vectorResource(R.drawable.ic_bookmark),
                     contentDescription = "bookmark"
                 )
 
                 Icon(
-                    tint = neutral5,
+                    tint = Color.Red,
                     imageVector = ImageVector.vectorResource(R.drawable.ic_search),
                     contentDescription = "search"
                 )

@@ -13,7 +13,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.obidia.movieapp.R
 import com.obidia.movieapp.domain.model.ItemModel
-import com.obidia.movieapp.ui.theme.neutral4
 
 @Composable
 fun MovieItem(item: ItemModel?, modifier: Modifier = Modifier) {
@@ -24,7 +23,10 @@ fun MovieItem(item: ItemModel?, modifier: Modifier = Modifier) {
         contentScale = ContentScale.FillHeight,
         modifier = modifier
             .aspectRatio(10f / 16f)
-            .background(color = neutral4, shape = RoundedCornerShape(4.dp))
+            .background(
+                color = androidx.compose.ui.graphics.Color.Red,
+                shape = RoundedCornerShape(4.dp)
+            )
             .clip(RoundedCornerShape(4.dp)),
         contentDescription = "image"
     )

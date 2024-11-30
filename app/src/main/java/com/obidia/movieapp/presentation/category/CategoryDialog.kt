@@ -34,9 +34,6 @@ import androidx.compose.ui.window.DialogProperties
 import com.obidia.movieapp.R
 import com.obidia.movieapp.data.utils.Resource
 import com.obidia.movieapp.domain.model.CategoryModel
-import com.obidia.movieapp.presentation.component.robotoFamily
-import com.obidia.movieapp.ui.theme.blackAlpha8
-import com.obidia.movieapp.ui.theme.neutral4
 
 
 @Composable
@@ -72,7 +69,7 @@ fun CategoryDialog(
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(blackAlpha8),
+                            .background(Color.Red),
                         verticalArrangement = Arrangement.spacedBy(36.dp)
                     ) {
                         item {
@@ -84,8 +81,7 @@ fun CategoryDialog(
                                 textAlign = TextAlign.Center,
                                 text = it.name,
                                 fontSize = 18.sp,
-                                fontFamily = robotoFamily,
-                                color = neutral4,
+                                color = Color.Red,
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .clickable {

@@ -19,8 +19,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.obidia.movieapp.R
-import com.obidia.movieapp.ui.theme.whiteAlpha3
-import com.obidia.movieapp.ui.theme.whiteAlpha8
 
 @Composable
 fun CategoryItem(title: String?, oncClick: () -> Unit, modifier: Modifier) {
@@ -28,7 +26,7 @@ fun CategoryItem(title: String?, oncClick: () -> Unit, modifier: Modifier) {
         modifier = modifier
             .background(color = Color.Transparent)
             .border(
-                border = BorderStroke(1.dp, color = whiteAlpha3),
+                border = BorderStroke(1.dp, color = Color.Red),
                 shape = RoundedCornerShape(80.dp)
             )
             .clickable {
@@ -38,7 +36,7 @@ fun CategoryItem(title: String?, oncClick: () -> Unit, modifier: Modifier) {
     ) {
         Text(
             text = title ?: "",
-            color = whiteAlpha8,
+            color = Color.Red,
             modifier = Modifier
                 .padding(vertical = 8.dp)
                 .padding(
@@ -56,7 +54,7 @@ fun CategoryItem(title: String?, oncClick: () -> Unit, modifier: Modifier) {
                     .padding(vertical = 8.dp)
                     .padding(end = 12.dp)
                     .size(14.dp),
-                tint = whiteAlpha8
+                tint = Color.Red
             )
         }
     }

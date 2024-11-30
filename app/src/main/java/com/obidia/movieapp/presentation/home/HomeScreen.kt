@@ -625,6 +625,9 @@ fun HeaderMovieTrending(
     ) {
 
         Box(
+
+
+
             modifier = modifier
                 .padding(top = 16.dp)
                 .padding(horizontal = 24.dp)

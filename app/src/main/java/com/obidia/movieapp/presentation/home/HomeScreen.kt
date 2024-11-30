@@ -36,6 +36,8 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -612,41 +614,50 @@ fun HeaderMovieTrending(
     modifier: Modifier,
     filmHeader: State<Resource<ItemModel>?>
 ) {
-    Box(
-        modifier = modifier
-            .padding(top = 16.dp)
-            .padding(horizontal = 24.dp)
-            .clip(shape = RoundedCornerShape(12.dp))
+    Card(
+        onClick = {},
+        colors = CardColors(
+            containerColor = Color.Transparent,
+            contentColor = MaterialTheme.colorScheme.primary,
+            disabledContainerColor = Color.Transparent,
+            disabledContentColor = Color.Transparent
+        )
     ) {
+        Box(
+            modifier = modifier
+                .padding(top = 16.dp)
+                .padding(horizontal = 24.dp)
+                .clip(shape = RoundedCornerShape(12.dp))
+        ) {
+            when (val data = filmHeader.value) {
+                is Resource.Error -> {}
+                is Resource.Loading -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .shimmerEffect(12.dp)
+                    )
+                }
 
-        when (val data = filmHeader.value) {
-            is Resource.Error -> {}
-            is Resource.Loading -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .shimmerEffect(12.dp)
-                )
+                is Resource.Success -> {
+                    AsyncImage(
+                        error = painterResource(id = R.drawable.img_broken),
+                        placeholder = painterResource(id = R.drawable.img_loading),
+                        model = "https://image.tmdb.org/t/p/w500/${data.data.image}",
+                        contentScale = ContentScale.FillWidth,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                color = MaterialTheme.colorScheme.surfaceDim,
+                                shape = RoundedCornerShape(12.dp)
+                            )
+                            .clip(RoundedCornerShape(12.dp)),
+                        contentDescription = "image"
+                    )
+                }
+
+                null -> {}
             }
-
-            is Resource.Success -> {
-                AsyncImage(
-                    error = painterResource(id = R.drawable.img_broken),
-                    placeholder = painterResource(id = R.drawable.img_loading),
-                    model = "https://image.tmdb.org/t/p/w500/${data.data.image}",
-                    contentScale = ContentScale.FillWidth,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            color = MaterialTheme.colorScheme.surfaceDim,
-                            shape = RoundedCornerShape(12.dp)
-                        )
-                        .clip(RoundedCornerShape(12.dp)),
-                    contentDescription = "image"
-                )
-            }
-
-            null -> {}
         }
     }
 }

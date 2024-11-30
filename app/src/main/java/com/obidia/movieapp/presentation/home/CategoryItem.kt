@@ -3,11 +3,12 @@ package com.obidia.movieapp.presentation.home
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,40 +24,49 @@ import com.obidia.movieapp.R
 
 @Composable
 fun CategoryItem(title: String?, oncClick: () -> Unit, modifier: Modifier) {
-    Row(
-        modifier = modifier
-            .background(color = Color.Transparent)
-            .border(
-                border = BorderStroke(1.dp, color = MaterialTheme.colorScheme.onSecondary),
-                shape = RoundedCornerShape(80.dp)
-            )
-            .clickable {
-                oncClick.invoke()
-            },
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = title ?: "",
-            color = MaterialTheme.colorScheme.onSecondary,
-            modifier = Modifier
-                .padding(vertical = 8.dp)
-                .padding(
-                    start = 12.dp,
-                    end = if (title != "Movies" && title != "TV Shows") 6.dp else 12.dp
-                ),
-            fontSize = 14.sp
+    Card(
+        onClick = {
+            oncClick.invoke()
+        },
+        colors = CardColors(
+            containerColor = Color.Transparent,
+            contentColor = MaterialTheme.colorScheme.primary,
+            disabledContainerColor = Color.Transparent,
+            disabledContentColor = Color.Transparent
         )
-
-        if (title != "Movies" && title != "TV Shows") {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_arrow_down),
-                contentDescription = "",
+    ) {
+        Row(
+            modifier = modifier
+                .background(color = Color.Transparent)
+                .border(
+                    border = BorderStroke(1.dp, color = MaterialTheme.colorScheme.onSecondary),
+                    shape = RoundedCornerShape(80.dp)
+                ),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = title ?: "",
+                color = MaterialTheme.colorScheme.onSecondary,
                 modifier = Modifier
                     .padding(vertical = 8.dp)
-                    .padding(end = 12.dp)
-                    .size(14.dp),
-                tint = MaterialTheme.colorScheme.onSecondary
+                    .padding(
+                        start = 12.dp,
+                        end = if (title != "Movies" && title != "TV Shows") 6.dp else 12.dp
+                    ),
+                fontSize = 14.sp
             )
+
+            if (title != "Movies" && title != "TV Shows") {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_arrow_down),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .padding(vertical = 8.dp)
+                        .padding(end = 12.dp)
+                        .size(14.dp),
+                    tint = MaterialTheme.colorScheme.onSecondary
+                )
+            }
         }
     }
 }

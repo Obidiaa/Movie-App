@@ -1,6 +1,7 @@
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -17,10 +18,10 @@ import com.obidia.movieapp.presentation.home.MovieItem
 @Composable
 fun ItemTrendingFilm(number: Int, model: ItemModel) {
 
-    Box{
+    Box {
         Text(
             text = if (number != 10) number.toString() else "1",
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onSecondary,
             fontSize = 160.sp,
             fontWeight = FontWeight.Bold,
             style = LocalTextStyle.current.merge(

@@ -45,7 +45,7 @@ private val lightScheme = lightColorScheme(
 
 @Composable
 fun MovieAppTheme(
-    content: @Composable() () -> Unit
+    content: @Composable () -> Unit
 ) {
     val colorScheme = lightScheme
 

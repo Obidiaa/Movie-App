@@ -3,6 +3,7 @@ package com.obidia.movieapp.presentation.home
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,7 +25,7 @@ fun MovieItem(item: ItemModel?, modifier: Modifier = Modifier) {
         modifier = modifier
             .aspectRatio(10f / 16f)
             .background(
-                color = androidx.compose.ui.graphics.Color.Red,
+                color = MaterialTheme.colorScheme.surfaceDim,
                 shape = RoundedCornerShape(4.dp)
             )
             .clip(RoundedCornerShape(4.dp)),

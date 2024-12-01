@@ -9,12 +9,12 @@ plugins {
 
 android {
     namespace = "com.obidia.movieapp"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.obidia.movieapp"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -116,4 +116,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
 
     implementation(libs.androidx.leanback)
+
+    implementation("androidx.palette:palette-ktx:1.0.0")
 }

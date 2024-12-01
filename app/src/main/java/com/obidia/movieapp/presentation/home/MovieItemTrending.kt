@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.obidia.movieapp.domain.model.ItemModel
 import com.obidia.movieapp.presentation.home.MovieItem
+import com.obidia.movieapp.ui.theme.poppins
 
 @Composable
 fun ItemTrendingFilm(number: Int, model: ItemModel) {
@@ -26,7 +27,7 @@ fun ItemTrendingFilm(number: Int, model: ItemModel) {
             fontWeight = FontWeight.Bold,
             style = LocalTextStyle.current.merge(
                 TextStyle(
-                    drawStyle = Stroke(width = 6f, join = StrokeJoin.Round)
+                    drawStyle = Stroke(width = 6f, join = StrokeJoin.Round), fontFamily = poppins
                 )
             )
         )

@@ -1,5 +1,6 @@
 package com.obidia.movieapp.presentation.home
 
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -278,6 +279,12 @@ class HomeViewModel @Inject constructor(
                     return
                 }
             }
+
+            is HomeAction.OnChangeBackgroundColor -> {
+                _uiState.value = uiState.value.copy(
+                    backgroundColor = action.color
+                )
+            }
         }
     }
 }
@@ -290,7 +297,8 @@ data class HomeUiState(
     val isMovie: Boolean = true,
     val isShowCategoryDialog: Boolean = false,
     val isVisibleContent: Boolean = true,
-    val categoryId: String? = null
+    val categoryId: String? = null,
+    val backgroundColor: Color? = null
 )
 
 data class FilmUiState(
@@ -335,4 +343,6 @@ sealed class HomeAction {
     data object OnDismissCategoryDialog : HomeAction()
 
     data object OnLoadFilmByCategory : HomeAction()
+
+    data class OnChangeBackgroundColor(val color: Color) : HomeAction()
 }

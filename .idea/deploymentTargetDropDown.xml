@@ -19,20 +19,7 @@
         </State>
       </entry>
       <entry key="app">
-        <State>
-          <targetSelectedWithDropDown>
-            <Target>
-              <type value="QUICK_BOOT_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="C:\Users\vedye\.android\avd\Medium_Phone_API_34.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-10-16T10:44:27.464173Z" />
-        </State>
+        <State />
       </entry>
       <entry key="review">
         <State />

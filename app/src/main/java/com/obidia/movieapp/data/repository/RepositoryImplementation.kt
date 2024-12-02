@@ -1,6 +1,5 @@
 package com.obidia.movieapp.data.repository
 
-import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -9,6 +8,7 @@ import com.obidia.movieapp.data.formatter
 import com.obidia.movieapp.data.paging.GetMovieNowPlayingPagingSource
 import com.obidia.movieapp.data.paging.GetMoviePopularPagingSource
 import com.obidia.movieapp.data.paging.GetMovieTopRatedPagingSource
+import com.obidia.movieapp.data.paging.GetSearchPagingSource
 import com.obidia.movieapp.data.paging.GetTvAiringPagingSource
 import com.obidia.movieapp.data.paging.GetTvPopularPagingSource
 import com.obidia.movieapp.data.paging.GetTvTopRatedPagingSource
@@ -145,7 +145,6 @@ class RepositoryImplementation @Inject constructor(
 
                 response.body()?.let {
                     val data = TvItemResponse.transform(it.results)
-                    Log.d("kesini tv", data[0].toString())
                     if (data.isEmpty()) {
                         throw Throwable()
                     } else {
@@ -257,5 +256,14 @@ class RepositoryImplementation @Inject constructor(
                 emit(Resource.Error(e))
             }
         }
+    }
+
+    override fun getSearch(query: String): Flow<PagingData<ItemModel>> {
+        return Pager(
+            config = PagingConfig(pageSize = 20, prefetchDistance = 1),
+            pagingSourceFactory = {
+                GetSearchPagingSource(remoteDataSource, query = query)
+            }
+        ).flow
     }
 }

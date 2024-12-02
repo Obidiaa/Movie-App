@@ -2,6 +2,7 @@ package com.obidia.movieapp.data.remote.api
 
 import com.obidia.movieapp.data.remote.response.CategoryListResponse
 import com.obidia.movieapp.data.remote.response.MovieListResponse
+import com.obidia.movieapp.data.remote.response.SearchListResponse
 import com.obidia.movieapp.data.remote.response.TvListResponse
 import retrofit2.Response
 import retrofit2.http.GET
@@ -103,4 +104,12 @@ interface ApiServices {
         @Query("air_date.gte") minDate: String,
         @Query("air_date.lte") maxDate: String,
     ): Response<TvListResponse>
+
+    @GET("search/multi")
+    suspend fun getSearch(
+        @Query("query") query: String,
+        @Query("include_adult") isAdult: Boolean = false,
+        @Query("page") page: Int,
+        @Query("language") language: String = "en-US"
+    ): SearchListResponse
 }

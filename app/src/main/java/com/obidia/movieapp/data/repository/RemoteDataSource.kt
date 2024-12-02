@@ -3,6 +3,7 @@ package com.obidia.movieapp.data.repository
 import com.obidia.movieapp.data.remote.api.ApiServices
 import com.obidia.movieapp.data.remote.response.CategoryListResponse
 import com.obidia.movieapp.data.remote.response.MovieListResponse
+import com.obidia.movieapp.data.remote.response.SearchListResponse
 import com.obidia.movieapp.data.remote.response.TvListResponse
 import retrofit2.Response
 import javax.inject.Inject
@@ -121,5 +122,12 @@ class RemoteDataSource @Inject constructor(
             maxDate = maxDate,
             minDate = minDate
         )
+    }
+
+    suspend fun getSearch(
+        query: String,
+        page: Int,
+    ): SearchListResponse {
+        return apiServices.getSearch(query = query, page = page)
     }
 }

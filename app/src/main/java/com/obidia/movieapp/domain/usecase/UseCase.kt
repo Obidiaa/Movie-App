@@ -31,4 +31,6 @@ interface UseCase {
     fun getTop10Movie(): Flow<Resource<List<ItemModel>>>
 
     fun getTop10Tv(): Flow<Resource<List<ItemModel>>>
+
+    fun getSearch(query: String): Flow<PagingData<ItemModel>>
 }

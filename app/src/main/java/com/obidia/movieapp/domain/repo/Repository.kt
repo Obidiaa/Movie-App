@@ -31,4 +31,6 @@ interface Repository {
     fun getTop10Movie(category: String?): Flow<Resource<List<ItemModel>>>
 
     fun getTop10Tv(): Flow<Resource<List<ItemModel>>>
+
+    fun getSearch(query: String): Flow<PagingData<ItemModel>>
 }

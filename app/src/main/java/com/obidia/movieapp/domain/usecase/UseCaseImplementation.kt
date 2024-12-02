@@ -58,4 +58,8 @@ class UseCaseImplementation @Inject constructor(
     override fun getTop10Tv(): Flow<Resource<List<ItemModel>>> {
         return repository.getTop10Tv()
     }
+
+    override fun getSearch(query: String): Flow<PagingData<ItemModel>> {
+        return repository.getSearch(query)
+    }
 }

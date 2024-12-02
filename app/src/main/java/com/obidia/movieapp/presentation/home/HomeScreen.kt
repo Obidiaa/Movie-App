@@ -39,6 +39,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -68,6 +69,7 @@ import com.obidia.movieapp.domain.model.ItemModel
 import com.obidia.movieapp.presentation.category.CategoryDialog
 import com.obidia.movieapp.presentation.component.HomeScreenRoute
 import com.obidia.movieapp.presentation.component.Route
+import com.obidia.movieapp.presentation.component.SearchScreenRoute
 import com.obidia.movieapp.presentation.component.robotoFamily
 import com.obidia.movieapp.presentation.component.shimmerEffect
 import com.obidia.movieapp.ui.theme.blackAlpha8
@@ -77,6 +79,7 @@ import com.obidia.movieapp.ui.theme.neutral5
 import com.obidia.movieapp.ui.theme.whiteAlpha3
 import com.obidia.movieapp.ui.theme.whiteAlpha8
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.homeScreenRoute(navigate: (Route) -> Unit) {
     composable<HomeScreenRoute> {
@@ -87,6 +90,7 @@ fun NavGraphBuilder.homeScreenRoute(navigate: (Route) -> Unit) {
             viewModel.listCategory.collectAsStateWithLifecycle(),
             viewModel.uiState.collectAsStateWithLifecycle(),
             viewModel::homeAction,
+            navigate
         )
     }
 }
@@ -96,10 +100,12 @@ fun HomeScreen(
     filmUiState: State<FilmUiState>,
     listCategory: State<Resource<List<CategoryModel>>?>,
     uiState: State<HomeUiState>,
-    action: (HomeAction) -> Unit
+    action: (HomeAction) -> Unit,
+    navigate: (Route) -> Unit,
 ) {
 
     val lazyListState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(lazyListState) {
         snapshotFlow {
@@ -111,18 +117,6 @@ fun HomeScreen(
                     isFirstItemVisible = lazyListState.firstVisibleItemIndex == 0 && it <= 200
                 )
             )
-        }
-    }
-
-    LaunchedEffect(
-        key1 = uiState.value.categoryName,
-    ) {
-        if (uiState.value.categoryName != "Categories" && uiState.value.categoryName != null || !uiState.value.isMovie || !uiState.value.isTvShow) {
-            action(HomeAction.ContentVisible(false))
-            delay(500)
-            action(HomeAction.ContentVisible(true))
-            lazyListState.scrollToItem(0)
-            action(HomeAction.OnLoadFilmByCategory)
         }
     }
 
@@ -166,7 +160,8 @@ fun HomeScreen(
                 },
                 onClickTvShow = {
                     action(HomeAction.OnClickTvShow)
-                }
+                },
+                navigate = navigate
             )
         }
 
@@ -175,6 +170,18 @@ fun HomeScreen(
             isShowDialog = uiState.value.isShowCategoryDialog,
             onClickCategory = { genre, id ->
                 action(HomeAction.OnClickCategoryDialog(genre, id.toString()))
+
+                scope.launch {
+                    if (uiState.value.categoryName != "Categories" &&
+                        uiState.value.categoryName != null
+                    ) {
+                        action(HomeAction.ContentVisible(false))
+                        delay(500)
+                        action(HomeAction.ContentVisible(true))
+                        lazyListState.scrollToItem(0)
+                        action(HomeAction.OnLoadFilmByCategory)
+                    }
+                }
             }
         ) {
             action(HomeAction.OnDismissCategoryDialog)
@@ -192,7 +199,8 @@ fun TopAppBar(
     onClickClose: () -> Unit,
     onClickCategory: () -> Unit,
     onClickMovie: () -> Unit,
-    onClickTvShow: () -> Unit
+    onClickTvShow: () -> Unit,
+    navigate: (Route) -> Unit,
 ) {
     val animatedColor by animateColorAsState(
         targetValue = if (isFirstItemVisible) Color.Transparent else blackAlpha8,
@@ -201,7 +209,7 @@ fun TopAppBar(
     )
 
     Column {
-        TopBar(animatedColor)
+        TopBar(animatedColor, navigate)
         CategoryView(
             animatedColor,
             isTopBarVisible,
@@ -666,7 +674,8 @@ fun MovieList(
 
 @Composable
 fun TopBar(
-    animatedColor: Color
+    animatedColor: Color,
+    navigate: (Route) -> Unit,
 ) {
     Column {
         Row(
@@ -699,6 +708,9 @@ fun TopBar(
                 )
 
                 Icon(
+                    modifier = Modifier.clickable {
+                        navigate(SearchScreenRoute)
+                    },
                     tint = neutral5,
                     imageVector = ImageVector.vectorResource(R.drawable.ic_search),
                     contentDescription = "search"

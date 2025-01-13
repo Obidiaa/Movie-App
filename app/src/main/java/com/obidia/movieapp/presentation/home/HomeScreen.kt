@@ -1,6 +1,9 @@
 package com.obidia.movieapp.presentation.home
 
 import ItemTrendingFilm
+import android.annotation.SuppressLint
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.EaseInQuart
@@ -21,10 +24,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -33,7 +40,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -45,9 +52,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -61,7 +70,9 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
+import androidx.palette.graphics.Palette
 import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
 import com.obidia.movieapp.R
 import com.obidia.movieapp.data.utils.Resource
 import com.obidia.movieapp.domain.model.CategoryModel
@@ -78,8 +89,10 @@ import com.obidia.movieapp.ui.theme.neutral4
 import com.obidia.movieapp.ui.theme.neutral5
 import com.obidia.movieapp.ui.theme.whiteAlpha3
 import com.obidia.movieapp.ui.theme.whiteAlpha8
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 fun NavGraphBuilder.homeScreenRoute(navigate: (Route) -> Unit) {
     composable<HomeScreenRoute> {
@@ -120,72 +133,69 @@ fun HomeScreen(
         }
     }
 
-    Scaffold(
-        containerColor = Color.Transparent,
-        topBar = { }
-    ) { contentPadding ->
-        Box(modifier = Modifier.padding(contentPadding)) {
-            Content(
-                contentVisible = uiState.value.isVisibleContent,
-                isMovie = uiState.value.isMovie,
-                isTvShow = uiState.value.isTvShow,
-                lazyListState = lazyListState,
-                listMovieNowPlaying = filmUiState.value.listMoviesNowPlaying.collectAsLazyPagingItems(),
-                listMoviePopular = filmUiState.value.listMoviesPopular.collectAsLazyPagingItems(),
-                listMovieTopRated = filmUiState.value.listMovieTopRated.collectAsLazyPagingItems(),
-                listTvTopAiring = filmUiState.value.listTvAiringToday.collectAsLazyPagingItems(),
-                listTvPopular = filmUiState.value.listTvPopular.collectAsLazyPagingItems(),
-                listTvTopRated = filmUiState.value.listTvTopRated.collectAsLazyPagingItems(),
-                filmHeader = filmUiState.value.filmHeader.collectAsStateWithLifecycle(),
-                listTop10Movie = filmUiState.value.listTop10Movie.collectAsStateWithLifecycle(),
-                listTop10Tv = filmUiState.value.listTop10Tv.collectAsStateWithLifecycle()
-            )
+    Box(modifier = Modifier.fillMaxSize()) {
+        Content(
+            contentVisible = uiState.value.isVisibleContent,
+            isMovie = uiState.value.isMovie,
+            isTvShow = uiState.value.isTvShow,
+            lazyListState = lazyListState,
+            listMovieNowPlaying = filmUiState.value.listMoviesNowPlaying.collectAsLazyPagingItems(),
+            listMoviePopular = filmUiState.value.listMoviesPopular.collectAsLazyPagingItems(),
+            listMovieTopRated = filmUiState.value.listMovieTopRated.collectAsLazyPagingItems(),
+            listTvTopAiring = filmUiState.value.listTvAiringToday.collectAsLazyPagingItems(),
+            listTvPopular = filmUiState.value.listTvPopular.collectAsLazyPagingItems(),
+            listTvTopRated = filmUiState.value.listTvTopRated.collectAsLazyPagingItems(),
+            filmHeader = filmUiState.value.filmHeader.collectAsStateWithLifecycle(),
+            listTop10Movie = filmUiState.value.listTop10Movie.collectAsStateWithLifecycle(),
+            listTop10Tv = filmUiState.value.listTop10Tv.collectAsStateWithLifecycle(),
+            action = action,
+            backgroundColor = uiState.value.backgroundColor
+        )
 
-            BoxTransition(isContentVisible = uiState.value.isVisibleContent)
+        BoxTransition(isContentVisible = uiState.value.isVisibleContent)
 
-            TopAppBar(
-                uiState.value.isFirstItemVisible,
-                uiState.value.isTopBarVisible,
-                uiState.value.isTvShow,
-                uiState.value.isMovie,
-                uiState.value.categoryName,
-                onClickClose = {
-                    action(HomeAction.OnClickClose)
-                },
-                onClickCategory = {
-                    action(HomeAction.OnClickCategory)
-                },
-                onClickMovie = {
-                    action(HomeAction.OnClickMovie)
-                },
-                onClickTvShow = {
-                    action(HomeAction.OnClickTvShow)
-                },
-                navigate = navigate
-            )
-        }
+        TopAppBar(
+            uiState.value.isFirstItemVisible,
+            uiState.value.isTopBarVisible,
+            uiState.value.isTvShow,
+            uiState.value.isMovie,
+            uiState.value.categoryName,
+            onClickClose = {
+                action(HomeAction.OnClickClose)
+            },
+            onClickCategory = {
+                action(HomeAction.OnClickCategory)
+            },
+            onClickMovie = {
+                action(HomeAction.OnClickMovie)
+            },
+            onClickTvShow = {
+                action(HomeAction.OnClickTvShow)
+            },
+            navigate = navigate
+        )
+    }
 
-        CategoryDialog(
-            listCategory = listCategory,
-            isShowDialog = uiState.value.isShowCategoryDialog,
-            onClickCategory = { genre, id ->
-                action(HomeAction.OnClickCategoryDialog(genre, id.toString()))
+    CategoryDialog(
+        listCategory = listCategory,
+        isShowDialog = uiState.value.isShowCategoryDialog,
+        onClickCategory = { genre, id ->
+            action(HomeAction.OnClickCategoryDialog(genre, id.toString()))
 
-                scope.launch {
-                    if (uiState.value.categoryName != "Categories" &&
-                        uiState.value.categoryName != null
-                    ) {
-                        action(HomeAction.ContentVisible(false))
-                        delay(500)
-                        action(HomeAction.ContentVisible(true))
-                        lazyListState.scrollToItem(0)
-                        action(HomeAction.OnLoadFilmByCategory)
-                    }
+            scope.launch {
+                if (uiState.value.categoryName != "Categories" &&
+                    uiState.value.categoryName != null
+                ) {
+                    action(HomeAction.ContentVisible(false))
+                    delay(500)
+                    action(HomeAction.ContentVisible(true))
+                    lazyListState.scrollToItem(0)
+                    action(HomeAction.OnLoadFilmByCategory)
                 }
             }
-        ) {
-            action(HomeAction.OnDismissCategoryDialog)
         }
+    ) {
+        action(HomeAction.OnDismissCategoryDialog)
     }
 }
 
@@ -208,10 +218,21 @@ fun TopAppBar(
         animationSpec = tween(500, easing = FastOutLinearInEasing)
     )
 
-    Column {
-        TopBar(animatedColor, navigate)
+    Column(
+        modifier = Modifier.drawBehind {
+            drawRect(animatedColor)
+        }
+    ) {
+        Spacer(
+            modifier = Modifier
+                .height(
+                    WindowInsets.statusBars
+                        .asPaddingValues()
+                        .calculateTopPadding()
+                )
+        )
+        TopBar(navigate)
         CategoryView(
-            animatedColor,
             isTopBarVisible,
             isTvShow,
             isMovie,
@@ -226,7 +247,6 @@ fun TopAppBar(
 
 @Composable
 fun CategoryView(
-    animatedColor: Color,
     isTopBarVisible: Boolean,
     isTvShow: Boolean,
     isMovie: Boolean,
@@ -245,7 +265,6 @@ fun CategoryView(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp)
-                .drawBehind { drawRect(animatedColor) }
                 .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -343,7 +362,9 @@ fun Content(
     listTvTopRated: LazyPagingItems<ItemModel>,
     filmHeader: State<Resource<ItemModel>?>,
     listTop10Movie: State<Resource<List<ItemModel>>?>,
-    listTop10Tv: State<Resource<List<ItemModel>>?>
+    listTop10Tv: State<Resource<List<ItemModel>>?>,
+    action: (HomeAction) -> Unit,
+    backgroundColor: Color?
 ) {
     AnimatedVisibility(
         visible = contentVisible,
@@ -358,20 +379,41 @@ fun Content(
     ) {
         LazyColumn(
             modifier = Modifier
-                .background(color = blackAlpha8),
+                .background(color = MaterialTheme.colorScheme.inverseSurface),
             state = lazyListState
         ) {
             item {
-                Spacer(modifier = Modifier.height(112.dp))
-            }
-
-            item {
-                HeaderMovieTrending(
-                    modifier = Modifier
-                        .fillParentMaxWidth()
-                        .fillParentMaxHeight(0.6f),
-                    filmHeader
-                )
+                Column(
+                    modifier = Modifier.background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                (backgroundColor?.copy(alpha = 0.4f)
+                                    ?: MaterialTheme.colorScheme.inverseSurface),
+                                MaterialTheme.colorScheme.inverseSurface
+                            )
+                        )
+                    )
+                ) {
+                    Spacer(
+                        modifier = Modifier
+                            .height(
+                                WindowInsets.statusBars
+                                    .asPaddingValues()
+                                    .calculateTopPadding()
+                            )
+                    )
+                    Spacer(
+                        modifier = Modifier
+                            .height(112.dp)
+                    )
+                    HeaderMovieTrending(
+                        modifier = Modifier
+                            .fillParentMaxWidth()
+                            .fillParentMaxHeight(0.6f),
+                        filmHeader,
+                        action = action
+                    )
+                }
             }
 
             item {
@@ -544,6 +586,15 @@ fun Content(
             item {
                 Spacer(modifier = Modifier.height(16.dp))
             }
+
+            item {
+                Spacer(
+                    modifier = Modifier.height(
+                        WindowInsets.systemBars.asPaddingValues(LocalDensity.current)
+                            .calculateBottomPadding()
+                    )
+                )
+            }
         }
     }
 }
@@ -591,7 +642,8 @@ fun FilmListTrending(
 @Composable
 fun HeaderMovieTrending(
     modifier: Modifier,
-    filmHeader: State<Resource<ItemModel>?>
+    filmHeader: State<Resource<ItemModel>?>,
+    action: (HomeAction) -> Unit
 ) {
     Box(
         modifier = modifier
@@ -599,10 +651,13 @@ fun HeaderMovieTrending(
             .padding(horizontal = 24.dp)
             .clip(shape = RoundedCornerShape(12.dp))
     ) {
+        val inverseSurface = MaterialTheme.colorScheme.inverseSurface
 
         when (val data = filmHeader.value) {
             is Resource.Error -> {}
             is Resource.Loading -> {
+                action(HomeAction.OnChangeBackgroundColor(inverseSurface))
+
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -611,7 +666,24 @@ fun HeaderMovieTrending(
             }
 
             is Resource.Success -> {
+                val imagePainter =
+                    rememberAsyncImagePainter("https://image.tmdb.org/t/p/w500/${data.data.image}")
+
+                LaunchedEffect(imagePainter) {
+                    val bitmap =
+                        (imagePainter.imageLoader.execute(imagePainter.request).drawable as BitmapDrawable).bitmap.toNonHardwareBitmap()
+                    val palette = withContext(Dispatchers.Default) {
+                        Palette.from(bitmap).generate()
+                    }
+                    palette.vibrantSwatch?.let { swatch ->
+                        action(HomeAction.OnChangeBackgroundColor(Color(swatch.rgb)))
+                    }
+                }
+
                 AsyncImage(
+                    onLoading = {
+                        action(HomeAction.OnChangeBackgroundColor(inverseSurface))
+                    },
                     error = painterResource(id = R.drawable.img_broken),
                     placeholder = painterResource(id = R.drawable.img_loading),
                     model = "https://image.tmdb.org/t/p/w500/${data.data.image}",
@@ -626,6 +698,15 @@ fun HeaderMovieTrending(
 
             null -> {}
         }
+    }
+}
+
+@SuppressLint("NewApi")
+fun Bitmap.toNonHardwareBitmap(): Bitmap {
+    return if (this.config == Bitmap.Config.HARDWARE) {
+        this.copy(Bitmap.Config.ARGB_8888, false)
+    } else {
+        this
     }
 }
 
@@ -674,17 +755,13 @@ fun MovieList(
 
 @Composable
 fun TopBar(
-    animatedColor: Color,
     navigate: (Route) -> Unit,
 ) {
     Column {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp)
-                .drawBehind {
-                    drawRect(animatedColor)
-                },
+                .height(56.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {

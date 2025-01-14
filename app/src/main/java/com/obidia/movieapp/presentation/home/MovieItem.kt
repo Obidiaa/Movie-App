@@ -3,6 +3,7 @@ package com.obidia.movieapp.presentation.home
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -13,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.obidia.movieapp.R
 import com.obidia.movieapp.domain.model.ItemModel
-import com.obidia.movieapp.ui.theme.neutral4
 
 @Composable
 fun MovieItem(item: ItemModel?, modifier: Modifier = Modifier) {
@@ -24,7 +24,10 @@ fun MovieItem(item: ItemModel?, modifier: Modifier = Modifier) {
         contentScale = ContentScale.FillHeight,
         modifier = modifier
             .aspectRatio(10f / 16f)
-            .background(color = neutral4, shape = RoundedCornerShape(4.dp))
+            .background(
+                color = MaterialTheme.colorScheme.surfaceDim,
+                shape = RoundedCornerShape(4.dp)
+            )
             .clip(RoundedCornerShape(4.dp)),
         contentDescription = "image"
     )

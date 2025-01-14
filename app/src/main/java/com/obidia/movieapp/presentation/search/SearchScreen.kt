@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,8 +42,6 @@ import com.obidia.movieapp.presentation.component.SearchScreenRoute
 import com.obidia.movieapp.presentation.component.robotoFamily
 import com.obidia.movieapp.presentation.home.MovieItem
 import com.obidia.movieapp.presentation.home.MovieItemPlaceholder
-import com.obidia.movieapp.ui.theme.neutral2
-import com.obidia.movieapp.ui.theme.neutral5
 
 fun NavGraphBuilder.searchScreenRout(navigate: (Route) -> Unit) {
     composable<SearchScreenRoute> {
@@ -74,10 +73,10 @@ fun SearchScreen(
             decorationBox = { innerTextField ->
                 OutlinedTextFieldDefaults.DecorationBox(
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = neutral2,
-                        unfocusedBorderColor = neutral2,
-                        unfocusedContainerColor = neutral2,
-                        focusedContainerColor = neutral2,
+                        focusedBorderColor = MaterialTheme.colorScheme.inverseSurface,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.inverseSurface,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.inverseSurface,
+                        focusedContainerColor = MaterialTheme.colorScheme.inverseSurface,
                     ),
                     value = uiStat.value.textSearch,
                     innerTextField = innerTextField,
@@ -118,10 +117,10 @@ fun SearchScreen(
                             isError = false,
                             interactionSource = remember { MutableInteractionSource() },
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = neutral2,
-                                unfocusedBorderColor = neutral2,
-                                unfocusedContainerColor = neutral2,
-                                focusedContainerColor = neutral2,
+                                focusedBorderColor = MaterialTheme.colorScheme.inverseSurface,
+                                unfocusedBorderColor = MaterialTheme.colorScheme.inverseSurface,
+                                unfocusedContainerColor = MaterialTheme.colorScheme.inverseSurface,
+                                focusedContainerColor = MaterialTheme.colorScheme.inverseSurface,
                             )
                         )
                     }
@@ -134,7 +133,7 @@ fun SearchScreen(
                 modifier = Modifier
                     .padding(horizontal = 16.dp, vertical = 16.dp),
                 text = "Movies and Tv Show",
-                color = neutral5,
+                color = MaterialTheme.colorScheme.onSecondary,
                 fontFamily = robotoFamily,
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp
@@ -187,13 +186,13 @@ fun TopBar() {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Icon(
-                tint = neutral5,
+                tint = MaterialTheme.colorScheme.surfaceTint,
                 imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_back),
                 contentDescription = "search"
             )
 
             Icon(
-                tint = neutral5,
+                tint = MaterialTheme.colorScheme.surfaceTint,
                 imageVector = ImageVector.vectorResource(R.drawable.ic_bookmark),
                 contentDescription = "bookmark"
             )

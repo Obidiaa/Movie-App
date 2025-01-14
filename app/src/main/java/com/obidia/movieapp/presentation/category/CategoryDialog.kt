@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -35,8 +36,6 @@ import com.obidia.movieapp.R
 import com.obidia.movieapp.data.utils.Resource
 import com.obidia.movieapp.domain.model.CategoryModel
 import com.obidia.movieapp.presentation.component.robotoFamily
-import com.obidia.movieapp.ui.theme.blackAlpha8
-import com.obidia.movieapp.ui.theme.neutral4
 
 
 @Composable
@@ -72,7 +71,7 @@ fun CategoryDialog(
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(blackAlpha8),
+                            .background(MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.8f)),
                         verticalArrangement = Arrangement.spacedBy(36.dp)
                     ) {
                         item {
@@ -85,7 +84,7 @@ fun CategoryDialog(
                                 text = it.name,
                                 fontSize = 18.sp,
                                 fontFamily = robotoFamily,
-                                color = neutral4,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer,
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .clickable {

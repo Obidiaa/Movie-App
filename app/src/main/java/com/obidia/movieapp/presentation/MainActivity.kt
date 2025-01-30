@@ -43,6 +43,7 @@ class MainActivity : ComponentActivity() {
             val selectedItem = remember { mutableIntStateOf(0) }
             MovieAppTheme {
                 Scaffold(
+                    containerColor = MaterialTheme.colorScheme.inverseSurface,
                     bottomBar = {
                         NavigationBar(
                             containerColor = MaterialTheme.colorScheme.onSurfaceVariant

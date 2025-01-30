@@ -6,24 +6,21 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.obidia.movieapp.R
-import com.obidia.movieapp.presentation.component.HomeScreenRoute
-import com.obidia.movieapp.presentation.component.SearchScreenRoute
-import com.obidia.movieapp.presentation.home.homeScreenRoute
-import com.obidia.movieapp.presentation.search.searchScreenRout
+import com.obidia.movieapp.presentation.home.HomeScreen
+import com.obidia.movieapp.presentation.search.SearchScreen
 import com.obidia.movieapp.ui.theme.MovieAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -47,55 +44,58 @@ class MainActivity : ComponentActivity() {
             MovieAppTheme {
                 Scaffold(
                     bottomBar = {
-                        NavigationBar {
+                        NavigationBar(
+                            containerColor = MaterialTheme.colorScheme.onSurfaceVariant
+                        ) {
                             navigationBarItems.forEachIndexed { index, item ->
                                 NavigationBarItem(
                                     selected = selectedItem.intValue == index,
                                     onClick = {
                                         selectedItem.intValue = index
-                                    }, icon = {
+                                    },
+                                    icon = {
                                         Icon(
                                             imageVector = ImageVector.vectorResource(item.icon),
                                             contentDescription = ""
                                         )
-                                    }
-
+                                    },
+                                    colors = NavigationBarItemDefaults.colors(
+                                        selectedIconColor = MaterialTheme.colorScheme.onPrimary,
+                                        unselectedIconColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        indicatorColor = MaterialTheme.colorScheme.primary
+                                    )
                                 )
                             }
                         }
+                    }) {
+                    when (selectedItem.intValue) {
+                        0 -> HomeScreen(modifier = Modifier.padding(bottom = it.calculateBottomPadding())) { }
+                        1 -> SearchScreen(modifier = Modifier.padding(bottom = it.calculateBottomPadding())) {}
+                        2 -> SearchScreen(modifier = Modifier.padding(bottom = it.calculateBottomPadding())) {}
                     }
-                ) {
-                    SetNav(
-                        when (selectedItem.intValue) {
-                            0 -> HomeScreenRoute
-                            1 -> SearchScreenRoute
-                            else -> HomeScreenRoute
-                        },
-                        modifier = Modifier.padding(bottom = it.calculateBottomPadding())
-                    )
                 }
             }
         }
+
+//        @Composable
+//        private fun SetNav(startDestination: Any, modifier: Modifier = Modifier) {
+//            NavHost(
+//                modifier = modifier,
+//                navController = navController as NavHostController,
+//                startDestination = startDestination
+//            ) {
+////            homeScreenRoute(navigate = ::navigate)
+////            searchScreenRout(navigate = ::navigate)
+//            }
+//        }
+//
+//        private fun navigate(route: Any) {
+//            navController.navigate(route)
+//        }
     }
 
-    @Composable
-    private fun SetNav(startDestination: Any, modifier: Modifier = Modifier) {
-        NavHost(
-            modifier = modifier,
-            navController = navController as NavHostController,
-            startDestination = startDestination
-        ) {
-            homeScreenRoute(navigate = ::navigate)
-            searchScreenRout(navigate = ::navigate)
-        }
-    }
-
-    private fun navigate(route: Any) {
-        navController.navigate(route)
-    }
+    data class NavigationBarItem(
+        val title: String,
+        val icon: Int,
+    )
 }
-
-data class NavigationBarItem(
-    val title: String,
-    val icon: Int,
-)

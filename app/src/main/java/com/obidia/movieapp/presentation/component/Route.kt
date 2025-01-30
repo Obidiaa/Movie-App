@@ -4,8 +4,13 @@ import kotlinx.serialization.Serializable
 
 sealed interface Route
 
-@Serializable
-data object HomeScreenRoute : Route
+sealed interface MainScreen : Route
 
 @Serializable
-data object SearchScreenRoute : Route
+data object HomeScreenRoute : MainScreen
+
+@Serializable
+data object SearchScreenRoute : MainScreen
+
+@Serializable
+data object BookMarkScreenRoute : MainScreen

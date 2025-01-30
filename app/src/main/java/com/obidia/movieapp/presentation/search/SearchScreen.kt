@@ -32,27 +32,31 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.obidia.movieapp.R
 import com.obidia.movieapp.presentation.component.Route
+import com.obidia.movieapp.presentation.component.SearchScreenRoute
 import com.obidia.movieapp.presentation.component.robotoFamily
 import com.obidia.movieapp.presentation.home.MovieItem
 import com.obidia.movieapp.presentation.home.MovieItemPlaceholder
 
-@Composable
-fun SearchScreen(modifier: Modifier, navigate: (Route) -> Unit) {
-    val viewModel: SearchViewModel = hiltViewModel()
-    SearchScreenContent(
-        modifier,
-        viewModel.uiState.collectAsStateWithLifecycle(),
-        viewModel::searchEvents
-    )
+fun NavGraphBuilder.searchScreenRoute(navigate: (Route) -> Unit) {
+    composable<SearchScreenRoute> {
+        val viewModel: SearchViewModel = hiltViewModel()
+        SearchScreen(
+            Modifier.fillMaxSize(),
+            viewModel.uiState.collectAsStateWithLifecycle(),
+            viewModel::searchEvents
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchScreenContent(
+fun SearchScreen(
     modifier: Modifier,
     uiStat: State<SearchUiStat>,
     action: (SearchEvents) -> Unit

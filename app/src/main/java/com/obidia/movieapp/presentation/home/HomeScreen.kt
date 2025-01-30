@@ -30,22 +30,23 @@ import com.obidia.movieapp.presentation.component.Route
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-@Composable
-fun HomeScreen(modifier: Modifier, navigate: (Route) -> Unit) {
-    val viewModel: HomeViewModel = hiltViewModel()
+fun NavGraphBuilder.homeScreenRoute(navigate: (Route) -> Unit) {
+    composable<HomeScreenRoute> {
+        val viewModel: HomeViewModel = hiltViewModel()
 
-    HomeScreenContent(
-        viewModel.filmState.collectAsStateWithLifecycle(),
-        viewModel.listCategory.collectAsStateWithLifecycle(),
-        viewModel.uiState.collectAsStateWithLifecycle(),
-        viewModel::homeAction,
-        navigate,
-        modifier
-    )
+        HomeScreen(
+            viewModel.filmState.collectAsStateWithLifecycle(),
+            viewModel.listCategory.collectAsStateWithLifecycle(),
+            viewModel.uiState.collectAsStateWithLifecycle(),
+            viewModel::homeAction,
+            navigate,
+            Modifier.fillMaxSize()
+        )
+    }
 }
 
 @Composable
-fun HomeScreenContent(
+fun HomeScreen(
     filmUiState: State<FilmUiState>,
     listCategory: State<Resource<List<CategoryModel>>?>,
     uiState: State<HomeUiState>,

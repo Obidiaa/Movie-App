@@ -82,11 +82,6 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 ) {
-//                    when (selectedItem.intValue) {
-//                        0 -> HomeScreen(modifier = Modifier.padding(bottom = it.calculateBottomPadding())) { }
-//                        1 -> SearchScreen(modifier = Modifier.padding(bottom = it.calculateBottomPadding())) {}
-//                        2 -> SearchScreen(modifier = Modifier.padding(bottom = it.calculateBottomPadding())) {}
-//                    }
                     Box(modifier = Modifier.padding(bottom = it.calculateBottomPadding())) {
                         SetNav(HomeScreenRoute)
                     }

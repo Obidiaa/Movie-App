@@ -51,8 +51,8 @@ import coil.compose.rememberAsyncImagePainter
 import com.obidia.movieapp.R
 import com.obidia.movieapp.data.utils.Resource
 import com.obidia.movieapp.domain.model.ItemModel
-import com.obidia.movieapp.presentation.component.robotoFamily
-import com.obidia.movieapp.presentation.component.shimmerEffect
+import com.obidia.movieapp.presentation.util.robotoFamily
+import com.obidia.movieapp.presentation.util.shimmerEffect
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

@@ -24,9 +24,8 @@ import androidx.navigation.compose.composable
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.obidia.movieapp.data.utils.Resource
 import com.obidia.movieapp.domain.model.CategoryModel
-import com.obidia.movieapp.presentation.category.CategoryDialog
-import com.obidia.movieapp.presentation.component.HomeScreenRoute
-import com.obidia.movieapp.presentation.component.Route
+import com.obidia.movieapp.presentation.util.HomeScreenRoute
+import com.obidia.movieapp.presentation.util.Route
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

@@ -1,4 +1,4 @@
-package com.obidia.movieapp.presentation.component
+package com.obidia.movieapp.presentation.util
 
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable

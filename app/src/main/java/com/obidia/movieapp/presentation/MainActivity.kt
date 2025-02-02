@@ -24,11 +24,11 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.obidia.movieapp.R
 import com.obidia.movieapp.presentation.bookmark.bookMarkScreenRoute
-import com.obidia.movieapp.presentation.component.BookMarkScreenRoute
-import com.obidia.movieapp.presentation.component.HomeScreenRoute
-import com.obidia.movieapp.presentation.component.MainScreen
-import com.obidia.movieapp.presentation.component.Route
-import com.obidia.movieapp.presentation.component.SearchScreenRoute
+import com.obidia.movieapp.presentation.util.BookMarkScreenRoute
+import com.obidia.movieapp.presentation.util.HomeScreenRoute
+import com.obidia.movieapp.presentation.util.MainScreen
+import com.obidia.movieapp.presentation.util.Route
+import com.obidia.movieapp.presentation.util.SearchScreenRoute
 import com.obidia.movieapp.presentation.home.homeScreenRoute
 import com.obidia.movieapp.presentation.search.searchScreenRoute
 import com.obidia.movieapp.ui.theme.MovieAppTheme

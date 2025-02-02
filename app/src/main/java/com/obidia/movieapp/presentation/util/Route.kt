@@ -1,4 +1,4 @@
-package com.obidia.movieapp.presentation.component
+package com.obidia.movieapp.presentation.util
 
 import kotlinx.serialization.Serializable
 

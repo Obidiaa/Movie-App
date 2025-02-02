@@ -6,10 +6,14 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.text.BasicTextField
@@ -37,17 +41,16 @@ import androidx.navigation.compose.composable
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.obidia.movieapp.R
-import com.obidia.movieapp.presentation.component.Route
-import com.obidia.movieapp.presentation.component.SearchScreenRoute
-import com.obidia.movieapp.presentation.component.robotoFamily
 import com.obidia.movieapp.presentation.home.MovieItem
 import com.obidia.movieapp.presentation.home.MovieItemPlaceholder
+import com.obidia.movieapp.presentation.util.Route
+import com.obidia.movieapp.presentation.util.SearchScreenRoute
+import com.obidia.movieapp.presentation.util.robotoFamily
 
 fun NavGraphBuilder.searchScreenRoute(navigate: (Route) -> Unit) {
     composable<SearchScreenRoute> {
         val viewModel: SearchViewModel = hiltViewModel()
         SearchScreen(
-            Modifier.fillMaxSize(),
             viewModel.uiState.collectAsStateWithLifecycle(),
             viewModel::searchEvents
         )
@@ -57,13 +60,20 @@ fun NavGraphBuilder.searchScreenRoute(navigate: (Route) -> Unit) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
-    modifier: Modifier,
     uiStat: State<SearchUiStat>,
     action: (SearchEvents) -> Unit
 ) {
     val list = uiStat.value.listSearch.collectAsLazyPagingItems()
 
-    Column(modifier = modifier) {
+    Column(modifier = Modifier.fillMaxSize()) {
+        Spacer(
+            modifier = Modifier.height(
+                WindowInsets.statusBars
+                    .asPaddingValues()
+                    .calculateTopPadding()
+            )
+        )
+
         TopBar()
 
         BasicTextField(

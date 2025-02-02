@@ -1,4 +1,4 @@
-package com.obidia.movieapp.presentation.component
+package com.obidia.movieapp.presentation.util
 
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily

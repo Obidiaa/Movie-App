@@ -12,7 +12,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.obidia.movieapp.domain.model.ItemModel
-import com.obidia.movieapp.presentation.component.robotoFamily
+import com.obidia.movieapp.presentation.util.robotoFamily
 import com.obidia.movieapp.presentation.home.MovieItem
 
 @Composable

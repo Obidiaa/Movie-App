@@ -1,4 +1,4 @@
-package com.obidia.movieapp.presentation.category
+package com.obidia.movieapp.presentation.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -35,7 +35,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.obidia.movieapp.R
 import com.obidia.movieapp.data.utils.Resource
 import com.obidia.movieapp.domain.model.CategoryModel
-import com.obidia.movieapp.presentation.component.robotoFamily
+import com.obidia.movieapp.presentation.util.robotoFamily
 
 
 @Composable

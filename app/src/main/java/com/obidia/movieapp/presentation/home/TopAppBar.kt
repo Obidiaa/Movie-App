@@ -36,8 +36,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.obidia.movieapp.R
-import com.obidia.movieapp.presentation.component.Route
-import com.obidia.movieapp.presentation.component.robotoFamily
+import com.obidia.movieapp.presentation.util.Route
+import com.obidia.movieapp.presentation.util.robotoFamily
 
 @Composable
 fun TopAppBar(

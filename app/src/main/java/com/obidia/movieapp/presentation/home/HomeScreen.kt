@@ -86,7 +86,8 @@ fun HomeScreen(
             listTop10Movie = filmUiState.value.listTop10Movie.collectAsStateWithLifecycle(),
             listTop10Tv = filmUiState.value.listTop10Tv.collectAsStateWithLifecycle(),
             action = action,
-            backgroundColor = uiState.value.backgroundColor
+            backgroundColor = uiState.value.backgroundColor,
+            navigate = navigate
         )
 
         BoxTransition(isContentVisible = uiState.value.isVisibleContent)

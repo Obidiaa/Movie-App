@@ -1,7 +1,6 @@
 package com.obidia.movieapp.presentation
 
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,44 +10,34 @@ import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarDefaults
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -56,15 +45,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.obidia.movieapp.R
 import com.obidia.movieapp.presentation.bookmark.bookMarkScreenRoute
+import com.obidia.movieapp.presentation.detail.detailScreenRoute
+import com.obidia.movieapp.presentation.home.homeScreenRoute
+import com.obidia.movieapp.presentation.search.searchScreenRoute
 import com.obidia.movieapp.presentation.util.BookMarkScreenRoute
 import com.obidia.movieapp.presentation.util.HomeScreenRoute
 import com.obidia.movieapp.presentation.util.MainScreen
 import com.obidia.movieapp.presentation.util.Route
 import com.obidia.movieapp.presentation.util.SearchScreenRoute
-import com.obidia.movieapp.presentation.home.homeScreenRoute
-import com.obidia.movieapp.presentation.search.searchScreenRoute
 import com.obidia.movieapp.ui.theme.MovieAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -89,14 +78,25 @@ class MainActivity : ComponentActivity() {
         )
         setContent {
             navController = rememberNavController()
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
+            val currentRoute = navBackStackEntry?.destination?.route
+
             MovieAppTheme {
                 Scaffold(
                     contentWindowInsets = WindowInsets(0, 0, 0, 0),
                     containerColor = MaterialTheme.colorScheme.background,
                     bottomBar = {
-                        val navBackStackEntry by navController.currentBackStackEntryAsState()
-                        val currentRoute = navBackStackEntry?.destination?.route
-                        Column {
+
+                        if (currentRoute?.contains(
+                                HomeScreenRoute::class.simpleName ?: ""
+                            ) == true ||
+                            currentRoute?.contains(
+                                SearchScreenRoute::class.simpleName ?: ""
+                            ) == true ||
+                            currentRoute?.contains(
+                                BookMarkScreenRoute::class.simpleName ?: ""
+                            ) == true
+                        ) Column {
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -105,14 +105,16 @@ class MainActivity : ComponentActivity() {
                             ) {
                                 navigationBarItems.forEach { item ->
                                     Column(
-                                        modifier = Modifier.width((LocalConfiguration.current.screenWidthDp / 3).dp).clickable {
-                                            navigate(item.route)
-                                        },
+                                        modifier = Modifier
+                                            .width((LocalConfiguration.current.screenWidthDp / 3).dp)
+                                            .clickable {
+                                                navigate(item.route)
+                                            },
                                         horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
                                         Spacer(modifier = Modifier.height(8.dp))
                                         Icon(
-                                            tint = if (currentRoute?.contains(item.route.toString()) == true) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.outlineVariant,
+                                            tint = if (currentRoute.contains(item.route.toString())) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.outlineVariant,
                                             imageVector = item.icon,
                                             contentDescription = ""
                                         )
@@ -120,7 +122,7 @@ class MainActivity : ComponentActivity() {
                                             text = item.title,
                                             style = MaterialTheme.typography.bodyLarge.copy(
                                                 fontSize = 10.sp,
-                                                color = if (currentRoute?.contains(item.route.toString()) == true) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.outlineVariant
+                                                color = if (currentRoute.contains(item.route.toString())) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.outlineVariant
                                             )
                                         )
                                         Spacer(modifier = Modifier.height(8.dp))
@@ -136,41 +138,24 @@ class MainActivity : ComponentActivity() {
                                 )
                             )
                         }
-//                        NavigationBar(
-//                            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
-//                        ) {
-//                            val navBackStackEntry by navController.currentBackStackEntryAsState()
-//                            val currentRoute = navBackStackEntry?.destination?.route
-//                            navigationBarItems.forEach { item ->
-//                                NavigationBarItem(
-//                                    alwaysShowLabel = false,
-//                                    selected = currentRoute?.contains(item.route.toString()) == true,
-//                                    onClick = {
-//                                        navigate(item.route)
-//                                    },
-////                                    label = {
-//                                        Text(
-//                                            text = item.title,
-//                                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 12.sp)
-//                                        )
-////                                    },
-//                                    icon = {
-//                                        Icon(
-//                                            imageVector = item.icon,
-//                                            contentDescription = ""
-//                                        )
-//                                    },
-//                                    colors = NavigationBarItemDefaults.colors(
-//                                        selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-//                                        unselectedIconColor = MaterialTheme.colorScheme.onSurface,
-//                                        indicatorColor = androidx.compose.ui.graphics.Color.Transparent
-//                                    )
-//                                )
-//                            }
-//                        }
                     }
                 ) {
-                    Box(modifier = Modifier.padding(paddingValues = it)) {
+                    Box(
+                        modifier = Modifier.padding(
+                            start = it.calculateStartPadding(LayoutDirection.Rtl),
+                            end = it.calculateStartPadding(LayoutDirection.Ltr),
+                            bottom = if (currentRoute?.contains(
+                                    HomeScreenRoute::class.simpleName ?: ""
+                                ) == true ||
+                                currentRoute?.contains(
+                                    SearchScreenRoute::class.simpleName ?: ""
+                                ) == true ||
+                                currentRoute?.contains(
+                                    BookMarkScreenRoute::class.simpleName ?: ""
+                                ) == true
+                            ) it.calculateBottomPadding() else 0.dp
+                        )
+                    ) {
                         SetNav(HomeScreenRoute)
                     }
                 }
@@ -188,6 +173,7 @@ class MainActivity : ComponentActivity() {
             homeScreenRoute(::navigate)
             searchScreenRoute(::navigate)
             bookMarkScreenRoute(::navigate)
+            detailScreenRoute()
         }
     }
 

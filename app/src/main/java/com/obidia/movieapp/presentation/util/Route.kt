@@ -14,3 +14,6 @@ data object SearchScreenRoute : MainScreen
 
 @Serializable
 data object BookMarkScreenRoute : MainScreen
+
+@Serializable
+data object DetailScreenRoute : Route

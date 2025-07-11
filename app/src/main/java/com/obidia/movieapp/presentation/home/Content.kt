@@ -10,6 +10,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,7 +21,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -37,7 +37,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -51,6 +50,8 @@ import coil.compose.rememberAsyncImagePainter
 import com.obidia.movieapp.R
 import com.obidia.movieapp.data.utils.Resource
 import com.obidia.movieapp.domain.model.ItemModel
+import com.obidia.movieapp.presentation.util.DetailScreenRoute
+import com.obidia.movieapp.presentation.util.Route
 import com.obidia.movieapp.presentation.util.robotoFamily
 import com.obidia.movieapp.presentation.util.shimmerEffect
 import kotlinx.coroutines.Dispatchers
@@ -72,7 +73,8 @@ fun Content(
     listTop10Movie: State<Resource<List<ItemModel>>?>,
     listTop10Tv: State<Resource<List<ItemModel>>?>,
     action: (HomeAction) -> Unit,
-    backgroundColor: Color?
+    backgroundColor: Color?,
+    navigate: (Route) -> Unit
 ) {
     AnimatedVisibility(
         visible = contentVisible,
@@ -94,7 +96,8 @@ fun Content(
                     modifier = Modifier.background(
                         brush = Brush.verticalGradient(
                             colors = listOf(
-                                (backgroundColor?.copy(alpha = 0.4f) ?: MaterialTheme.colorScheme.background),
+                                (backgroundColor?.copy(alpha = 0.4f)
+                                    ?: MaterialTheme.colorScheme.background),
                                 MaterialTheme.colorScheme.background
                             )
                         )
@@ -139,6 +142,9 @@ fun Content(
                         modifier = Modifier
                             .fillParentMaxHeight(0.3f)
                             .animateItem(),
+                        itemClick = {
+                            navigate(DetailScreenRoute)
+                        }
                     )
                 }
             }
@@ -160,6 +166,9 @@ fun Content(
                         modifier = Modifier
                             .fillParentMaxHeight(0.3f)
                             .animateItem(),
+                        itemClick = {
+                            navigate(DetailScreenRoute)
+                        }
                     )
                 }
             }
@@ -181,6 +190,9 @@ fun Content(
                         modifier = Modifier
                             .fillParentMaxHeight(0.3f)
                             .animateItem(),
+                        itemClick = {
+                            navigate(DetailScreenRoute)
+                        }
                     )
                 }
             }
@@ -222,6 +234,9 @@ fun Content(
                         modifier = Modifier
                             .fillParentMaxHeight(0.3f)
                             .animateItem(),
+                        itemClick = {
+                            navigate(DetailScreenRoute)
+                        }
                     )
                 }
             }
@@ -243,6 +258,9 @@ fun Content(
                         modifier = Modifier
                             .fillParentMaxHeight(0.3f)
                             .animateItem(),
+                        itemClick = {
+                            navigate(DetailScreenRoute)
+                        }
                     )
                 }
             }
@@ -264,6 +282,9 @@ fun Content(
                         modifier = Modifier
                             .fillParentMaxHeight(0.3f)
                             .animateItem(),
+                        itemClick = {
+                            navigate(DetailScreenRoute)
+                        }
                     )
                 }
             }
@@ -407,6 +428,7 @@ fun HeaderMovieTrending(
 fun MovieList(
     title: String, list: LazyPagingItems<ItemModel>,
     modifier: Modifier,
+    itemClick: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -429,7 +451,7 @@ fun MovieList(
         ) {
             item { Spacer(modifier = Modifier.width(0.dp)) }
 
-            items(list) { movie -> MovieItem(movie) }
+            items(list) { movie -> MovieItem(movie, Modifier.clickable { itemClick() }) }
 
             list.apply {
                 when {

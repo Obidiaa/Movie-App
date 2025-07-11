@@ -18,8 +18,17 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
 import com.obidia.movieapp.R
+import com.obidia.movieapp.presentation.util.DetailScreenRoute
 import com.obidia.movieapp.presentation.util.robotoFamily
+
+fun NavGraphBuilder.detailScreenRoute() {
+    composable<DetailScreenRoute> {
+        DetailScreen()
+    }
+}
 
 @Composable
 fun DetailScreen() {

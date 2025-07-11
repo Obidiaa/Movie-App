@@ -5,21 +5,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.obidia.movieapp.domain.model.ItemModel
-import com.obidia.movieapp.presentation.util.robotoFamily
 import com.obidia.movieapp.presentation.home.MovieItem
+import com.obidia.movieapp.presentation.util.robotoFamily
 
 @Composable
 fun ItemTrendingFilm(number: Int, model: ItemModel) {
 
-    Box{
+    Box {
         Text(
             text = if (number != 10) number.toString() else "1",
             color = MaterialTheme.colorScheme.onBackground,

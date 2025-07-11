@@ -24,12 +24,11 @@ import com.obidia.movieapp.R
 @Composable
 fun CategoryItem(title: String?, oncClick: () -> Unit, modifier: Modifier) {
     Row(
-        modifier = modifier
-            .background(color = Color.Transparent)
-            .border(
-                border = BorderStroke(1.dp, color = MaterialTheme.colorScheme.onSecondary),
-                shape = RoundedCornerShape(80.dp)
-            )
+        modifier = modifier.border(
+            width = 1.dp,
+            color = MaterialTheme.colorScheme.onBackground,
+            shape = RoundedCornerShape(80.dp)
+        )
             .clickable {
                 oncClick.invoke()
             },
@@ -37,14 +36,16 @@ fun CategoryItem(title: String?, oncClick: () -> Unit, modifier: Modifier) {
     ) {
         Text(
             text = title ?: "",
-            color = MaterialTheme.colorScheme.onSecondary,
+            style = MaterialTheme.typography.titleMedium.copy(
+                color = MaterialTheme.colorScheme.onBackground,
+                fontSize = 14.sp
+            ),
             modifier = Modifier
-                .padding(vertical = 8.dp)
+                .padding(vertical = 4.dp)
                 .padding(
                     start = 12.dp,
                     end = if (title != "Movies" && title != "TV Shows") 6.dp else 12.dp
                 ),
-            fontSize = 14.sp
         )
 
         if (title != "Movies" && title != "TV Shows") {
@@ -52,10 +53,9 @@ fun CategoryItem(title: String?, oncClick: () -> Unit, modifier: Modifier) {
                 painter = painterResource(id = R.drawable.ic_arrow_down),
                 contentDescription = "",
                 modifier = Modifier
-                    .padding(vertical = 8.dp)
-                    .padding(end = 12.dp)
-                    .size(14.dp),
-                tint = MaterialTheme.colorScheme.onSecondary
+                    .padding(end = 8.dp)
+                    .size(20.dp),
+                tint = MaterialTheme.colorScheme.onBackground
             )
         }
     }

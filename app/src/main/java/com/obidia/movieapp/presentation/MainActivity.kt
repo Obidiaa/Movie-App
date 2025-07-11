@@ -1,22 +1,56 @@
 package com.obidia.movieapp.presentation
 
+import android.graphics.Color
+import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -40,49 +74,103 @@ class MainActivity : ComponentActivity() {
     private lateinit var navController: NavController
 
     private val navigationBarItems = listOf(
-        NavigationBarItem("Home", R.drawable.ic_home_filled, HomeScreenRoute),
-        NavigationBarItem("Search", R.drawable.ic_search, SearchScreenRoute),
-        NavigationBarItem("Bookmark", R.drawable.ic_bookmark, BookMarkScreenRoute)
+        NavigationBarItem("Home", Icons.Filled.Home, HomeScreenRoute),
+        NavigationBarItem("Search", Icons.Filled.Search, SearchScreenRoute),
+        NavigationBarItem("Bookmark", Icons.Filled.Favorite, BookMarkScreenRoute)
     )
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        enableEdgeToEdge(
+            navigationBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT) {
+                true
+            }
+        )
         setContent {
             navController = rememberNavController()
             MovieAppTheme {
                 Scaffold(
-                    containerColor = MaterialTheme.colorScheme.inverseSurface,
+                    contentWindowInsets = WindowInsets(0, 0, 0, 0),
+                    containerColor = MaterialTheme.colorScheme.background,
                     bottomBar = {
-                        NavigationBar(
-                            containerColor = MaterialTheme.colorScheme.onSurfaceVariant
-                        ) {
-                            val navBackStackEntry by navController.currentBackStackEntryAsState()
-                            val currentRoute = navBackStackEntry?.destination?.route
-                            navigationBarItems.forEach { item ->
-                                NavigationBarItem(
-                                    selected = currentRoute?.contains(item.route.toString())
-                                        ?: false,
-                                    onClick = {
-                                        navigate(item.route)
-                                    },
-                                    icon = {
+                        val navBackStackEntry by navController.currentBackStackEntryAsState()
+                        val currentRoute = navBackStackEntry?.destination?.route
+                        Column {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(color = MaterialTheme.colorScheme.surfaceContainerLow),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                navigationBarItems.forEach { item ->
+                                    Column(
+                                        modifier = Modifier.width((LocalConfiguration.current.screenWidthDp / 3).dp).clickable {
+                                            navigate(item.route)
+                                        },
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        Spacer(modifier = Modifier.height(8.dp))
                                         Icon(
-                                            imageVector = ImageVector.vectorResource(item.icon),
+                                            tint = if (currentRoute?.contains(item.route.toString()) == true) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.outlineVariant,
+                                            imageVector = item.icon,
                                             contentDescription = ""
                                         )
-                                    },
-                                    colors = NavigationBarItemDefaults.colors(
-                                        selectedIconColor = MaterialTheme.colorScheme.onPrimary,
-                                        unselectedIconColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                                        indicatorColor = MaterialTheme.colorScheme.primary
-                                    )
-                                )
+                                        Text(
+                                            text = item.title,
+                                            style = MaterialTheme.typography.bodyLarge.copy(
+                                                fontSize = 10.sp,
+                                                color = if (currentRoute?.contains(item.route.toString()) == true) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.outlineVariant
+                                            )
+                                        )
+                                        Spacer(modifier = Modifier.height(8.dp))
+                                    }
+
+                                }
                             }
+
+                            Spacer(
+                                modifier = Modifier.height(
+                                    WindowInsets.systemBars.asPaddingValues(LocalDensity.current)
+                                        .calculateBottomPadding()
+                                )
+                            )
                         }
+//                        NavigationBar(
+//                            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+//                        ) {
+//                            val navBackStackEntry by navController.currentBackStackEntryAsState()
+//                            val currentRoute = navBackStackEntry?.destination?.route
+//                            navigationBarItems.forEach { item ->
+//                                NavigationBarItem(
+//                                    alwaysShowLabel = false,
+//                                    selected = currentRoute?.contains(item.route.toString()) == true,
+//                                    onClick = {
+//                                        navigate(item.route)
+//                                    },
+////                                    label = {
+//                                        Text(
+//                                            text = item.title,
+//                                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 12.sp)
+//                                        )
+////                                    },
+//                                    icon = {
+//                                        Icon(
+//                                            imageVector = item.icon,
+//                                            contentDescription = ""
+//                                        )
+//                                    },
+//                                    colors = NavigationBarItemDefaults.colors(
+//                                        selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+//                                        unselectedIconColor = MaterialTheme.colorScheme.onSurface,
+//                                        indicatorColor = androidx.compose.ui.graphics.Color.Transparent
+//                                    )
+//                                )
+//                            }
+//                        }
                     }
                 ) {
-                    Box(modifier = Modifier.padding(bottom = it.calculateBottomPadding())) {
+                    Box(modifier = Modifier.padding(paddingValues = it)) {
                         SetNav(HomeScreenRoute)
                     }
                 }
@@ -123,7 +211,7 @@ class MainActivity : ComponentActivity() {
 
     data class NavigationBarItem(
         val title: String,
-        val icon: Int,
+        val icon: ImageVector,
         val route: Route
     )
 }

@@ -55,10 +55,8 @@ fun CategoryDialog(
         onDismissRequest = {
             isShow = false
             onDismissRequest.invoke()
-        },
-        properties = DialogProperties(
-            dismissOnClickOutside = true,
-            usePlatformDefaultWidth = false
+        }, properties = DialogProperties(
+            dismissOnClickOutside = true, usePlatformDefaultWidth = false
         )
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -71,7 +69,7 @@ fun CategoryDialog(
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.8f)),
+                            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.8f)),
                         verticalArrangement = Arrangement.spacedBy(36.dp)
                     ) {
                         item {
@@ -80,22 +78,24 @@ fun CategoryDialog(
 
                         items(items = list.data) {
                             Text(
-                                textAlign = TextAlign.Center,
                                 text = it.name,
-                                fontSize = 18.sp,
-                                fontFamily = robotoFamily,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                style = MaterialTheme.typography.titleLarge.copy(
+                                    textAlign = TextAlign.Center,
+                                    fontSize = 18.sp,
+                                    fontFamily = robotoFamily,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    fontWeight = FontWeight.Medium,
+                                ),
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .clickable {
                                         onClickCategory.invoke(it.name, it.id)
                                     },
-                                fontWeight = FontWeight.Medium
                             )
                         }
 
                         item {
-                            Spacer(modifier = Modifier.height(120.dp))
+                            Spacer(modifier = Modifier.height(160.dp))
                         }
                     }
 
@@ -106,10 +106,11 @@ fun CategoryDialog(
                         },
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
-                            .padding(bottom = 56.dp),
-                        containerColor = Color.White
+                            .padding(bottom = 100.dp),
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
                     ) {
                         Icon(
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
                             imageVector = ImageVector.vectorResource(R.drawable.ic_close),
                             contentDescription = ""
                         )

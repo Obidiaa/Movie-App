@@ -25,7 +25,7 @@ fun MovieItem(item: ItemModel?, modifier: Modifier = Modifier) {
         modifier = modifier
             .aspectRatio(10f / 16f)
             .background(
-                color = MaterialTheme.colorScheme.surfaceDim,
+                color = MaterialTheme.colorScheme.surfaceVariant,
                 shape = RoundedCornerShape(4.dp)
             )
             .clip(RoundedCornerShape(4.dp)),

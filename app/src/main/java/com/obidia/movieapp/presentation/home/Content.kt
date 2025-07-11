@@ -86,8 +86,7 @@ fun Content(
         )
     ) {
         LazyColumn(
-            modifier = Modifier
-                .background(color = MaterialTheme.colorScheme.inverseSurface),
+            modifier = Modifier,
             state = lazyListState
         ) {
             item {
@@ -95,9 +94,8 @@ fun Content(
                     modifier = Modifier.background(
                         brush = Brush.verticalGradient(
                             colors = listOf(
-                                (backgroundColor?.copy(alpha = 0.4f)
-                                    ?: MaterialTheme.colorScheme.inverseSurface),
-                                MaterialTheme.colorScheme.inverseSurface
+                                (backgroundColor?.copy(alpha = 0.4f) ?: MaterialTheme.colorScheme.background),
+                                MaterialTheme.colorScheme.background
                             )
                         )
                     )
@@ -294,15 +292,6 @@ fun Content(
             item {
                 Spacer(modifier = Modifier.height(16.dp))
             }
-
-            item {
-                Spacer(
-                    modifier = Modifier.height(
-                        WindowInsets.systemBars.asPaddingValues(LocalDensity.current)
-                            .calculateBottomPadding()
-                    )
-                )
-            }
         }
     }
 }
@@ -320,10 +309,12 @@ fun FilmListTrending(
                 .padding(horizontal = 8.dp)
                 .padding(bottom = 4.dp, top = 20.dp),
             text = text,
-            color = MaterialTheme.colorScheme.inverseOnSurface,
-            fontFamily = robotoFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = 18.sp
+            style = MaterialTheme.typography.titleMedium.copy(
+                color = MaterialTheme.colorScheme.onBackground,
+                fontFamily = robotoFamily,
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp
+            ),
         )
 
         LazyRow(
@@ -359,12 +350,12 @@ fun HeaderMovieTrending(
             .padding(horizontal = 24.dp)
             .clip(shape = RoundedCornerShape(12.dp))
     ) {
-        val inverseSurface = MaterialTheme.colorScheme.inverseSurface
+        val backgroundColor = MaterialTheme.colorScheme.background
 
         when (val data = filmHeader.value) {
             is Resource.Error -> {}
             is Resource.Loading -> {
-                action(HomeAction.OnChangeBackgroundColor(inverseSurface))
+                action(HomeAction.OnChangeBackgroundColor(backgroundColor))
 
                 Box(
                     modifier = Modifier
@@ -390,7 +381,7 @@ fun HeaderMovieTrending(
 
                 AsyncImage(
                     onLoading = {
-                        action(HomeAction.OnChangeBackgroundColor(inverseSurface))
+                        action(HomeAction.OnChangeBackgroundColor(backgroundColor))
                     },
                     error = painterResource(id = R.drawable.img_broken),
                     placeholder = painterResource(id = R.drawable.img_loading),
@@ -425,10 +416,12 @@ fun MovieList(
                 .padding(horizontal = 8.dp)
                 .padding(bottom = 4.dp, top = 20.dp),
             text = title,
-            color = MaterialTheme.colorScheme.inverseOnSurface,
-            fontFamily = robotoFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = 18.sp
+            style = MaterialTheme.typography.titleMedium.copy(
+                color = MaterialTheme.colorScheme.onBackground,
+                fontFamily = robotoFamily,
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp
+            ),
         )
 
         LazyRow(

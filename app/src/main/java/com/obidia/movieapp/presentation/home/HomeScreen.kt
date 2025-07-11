@@ -141,7 +141,7 @@ fun BoxTransition(
     isContentVisible: Boolean
 ) {
     val animatedColorBox by animateColorAsState(
-        targetValue = if (!isContentVisible) MaterialTheme.colorScheme.inverseSurface else Color.Transparent,
+        targetValue = if (!isContentVisible) MaterialTheme.colorScheme.background else Color.Transparent,
         label = "",
         animationSpec = tween(500)
     )

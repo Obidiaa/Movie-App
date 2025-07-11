@@ -1,6 +1,7 @@
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -21,12 +22,12 @@ fun ItemTrendingFilm(number: Int, model: ItemModel) {
     Box{
         Text(
             text = if (number != 10) number.toString() else "1",
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onBackground,
             fontSize = 160.sp,
             fontWeight = FontWeight.Bold,
             fontFamily = robotoFamily,
             style = LocalTextStyle.current.merge(
-                TextStyle(
+                other = MaterialTheme.typography.titleMedium.copy(
                     drawStyle = Stroke(width = 6f, join = StrokeJoin.Round)
                 )
             )
@@ -34,17 +35,18 @@ fun ItemTrendingFilm(number: Int, model: ItemModel) {
 
         if (number == 10) Text(
             text = "0",
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onBackground,
             fontSize = 160.sp,
             fontWeight = FontWeight.Bold,
             fontFamily = robotoFamily,
             modifier = Modifier.padding(start = 60.dp),
             style = LocalTextStyle.current.merge(
-                TextStyle(
+                MaterialTheme.typography.titleMedium.copy(
                     drawStyle = Stroke(width = 6f, join = StrokeJoin.Round)
                 )
             )
         )
+
         MovieItem(
             item = model,
             modifier = Modifier.padding(start = if (number != 10) 60.dp else 100.dp)

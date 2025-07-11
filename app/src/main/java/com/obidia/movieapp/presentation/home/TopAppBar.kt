@@ -7,6 +7,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -53,7 +55,7 @@ fun TopAppBar(
     navigate: (Route) -> Unit,
 ) {
     val animatedColor by animateColorAsState(
-        targetValue = if (isFirstItemVisible) Color.Transparent else MaterialTheme.colorScheme.secondary.copy(
+        targetValue = if (isFirstItemVisible) Color.Transparent else MaterialTheme.colorScheme.background.copy(
             alpha = 0.8f
         ),
         label = "",
@@ -114,10 +116,8 @@ fun CategoryView(
             if (!isMovie || !isTvShow) item {
                 Icon(
                     modifier = Modifier
-                        .border(
-                            border = BorderStroke(1.dp, color = MaterialTheme.colorScheme.onSecondary),
-                            shape = RoundedCornerShape(200.dp)
-                        )
+                        .size(24.dp)
+                        .border(width = 1.dp, color = MaterialTheme.colorScheme.onBackground, shape = RoundedCornerShape(200.dp))
                         .padding(4.dp)
                         .clickable {
                             onClickClose.invoke()
@@ -129,16 +129,17 @@ fun CategoryView(
                         ),
                     imageVector = ImageVector.vectorResource(R.drawable.ic_close),
                     contentDescription = "",
-                    tint = MaterialTheme.colorScheme.onSecondary
+                    tint = MaterialTheme.colorScheme.onBackground
                 )
             }
 
             if (isTvShow) item {
-                CategoryItem("TV Shows", modifier = Modifier.animateItem(
-                    fadeInSpec = tween(400),
-                    fadeOutSpec = tween(400),
-                    placementSpec = tween(400)
-                ),
+                CategoryItem(
+                    "TV Shows", modifier = Modifier.animateItem(
+                        fadeInSpec = tween(400),
+                        fadeOutSpec = tween(400),
+                        placementSpec = tween(400)
+                    ),
                     oncClick = {
                         onClickTvShow.invoke()
                     }
@@ -146,11 +147,12 @@ fun CategoryView(
             }
 
             if (isMovie) item {
-                CategoryItem("Movies", modifier = Modifier.animateItem(
-                    fadeInSpec = tween(400),
-                    fadeOutSpec = tween(400),
-                    placementSpec = tween(400)
-                ),
+                CategoryItem(
+                    "Movies", modifier = Modifier.animateItem(
+                        fadeInSpec = tween(400),
+                        fadeOutSpec = tween(400),
+                        placementSpec = tween(400)
+                    ),
                     oncClick = {
                         onClickMovie.invoke()
                     }
@@ -175,20 +177,21 @@ fun CategoryView(
 }
 
 @Composable
-fun TopBar(
-) {
+fun TopBar() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp),
     ) {
         Text(
-            color = MaterialTheme.colorScheme.onSecondary,
-            modifier = Modifier.padding(vertical = 12.dp, horizontal = 16.dp),
             text = "Jet Movie",
-            fontFamily = robotoFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = 24.sp
+            style = MaterialTheme.typography.titleLarge.copy(
+                color = MaterialTheme.colorScheme.primaryContainer,
+                fontFamily = robotoFamily,
+                fontWeight = FontWeight.Bold,
+                fontSize = 24.sp
+            ),
+            modifier = Modifier.padding(vertical = 12.dp, horizontal = 16.dp),
         )
     }
 }

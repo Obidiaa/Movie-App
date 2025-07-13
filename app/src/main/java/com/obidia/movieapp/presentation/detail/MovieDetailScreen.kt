@@ -24,6 +24,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,49 +42,27 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.obidia.movieapp.R
 import com.obidia.movieapp.presentation.util.DetailScreenRoute
 import com.obidia.movieapp.ui.theme.MovieAppTheme
+import kotlinx.coroutines.flow.MutableStateFlow
 
 fun NavGraphBuilder.detailScreenRoute() {
     composable<DetailScreenRoute> {
-        DetailScreen()
+        val viewModel = hiltViewModel<MovieDetailViewModel>()
+        DetailScreen(uiState = viewModel.uiState.collectAsStateWithLifecycle())
     }
 }
 
-data class DetailMovieModel(
-    val image: String,
-    val title: String,
-    val date: String,
-    val isBookmark: Boolean,
-    val listGenre: List<String>,
-    val tagline: String,
-    val description: String,
-    val originalTitle: String,
-    val runTime: String,
-    val voteCount: Int,
-    val voteAverage: Double,
-    val listRecommendation: List<String>
-)
-
 @Composable
-fun DetailScreen() {
-    val data = DetailMovieModel(
-        image = "",
-        title = "Blade Runner 2049",
-        date = "12-12-2017",
-        isBookmark = true,
-        listGenre = listOf("Action", "Sci-Fi", "Sport", "Shounen", "Thriller", "Mystery"),
-        tagline = "“The Search for the Perfect Wave!”",
-        description = "Bruce Brown's The Endless Summer is one of the first and most influential surf movies of all time. The film documents American surfers Mike Hynson and Robert August as they travel the world during California’s winter (which, back in 1965 was off-season for surfing) in search of the perfect wave and ultimately, an endless summer.",
-        originalTitle = "Blade Runner 2049",
-        runTime = "91 minutes",
-        voteCount = 1200,
-        voteAverage = 8.0,
-        listRecommendation = listOf("Blade Runner", "Blade Runner 2049", "Blade Runner")
-    )
+fun DetailScreen(
+    uiState: State<MovieDetailUiState>,
+) {
+    val data = uiState.value.movieDetail
 
     LazyColumn(
         modifier = Modifier
@@ -149,7 +128,7 @@ fun DetailScreen() {
                 ) {
                     Column {
                         Text(
-                            text = data.title,
+                            text = data?.title ?: "",
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             style = MaterialTheme.typography.titleMedium.copy(
@@ -162,7 +141,7 @@ fun DetailScreen() {
                         Spacer(modifier = Modifier.height(12.dp))
 
                         Text(
-                            text = data.date,
+                            text = data?.date ?: "",
                             maxLines = 1,
                             style = MaterialTheme.typography.titleLarge.copy(
                                 fontSize = 16.sp,
@@ -187,7 +166,7 @@ fun DetailScreen() {
             ) {
                 item { Spacer(Modifier.width(24.dp)) }
                 item { Spacer(Modifier.width(24.dp)) }
-                itemsIndexed(items = data.listGenre) { index, item ->
+                itemsIndexed(items = data?.listGenre ?: listOf()) { index, item ->
                     Row {
                         Box(
                             modifier = Modifier.background(
@@ -207,7 +186,9 @@ fun DetailScreen() {
                             )
                         }
 
-                        if (index in (data.listGenre.size - 2)..<data.listGenre.size) {
+                        if (
+                            index in ((data?.listGenre?.size ?: 0) - 2..<(data?.listGenre?.size ?: 0))
+                        ) {
                             Spacer(modifier = Modifier.width(32.dp))
                         }
                     }
@@ -221,7 +202,7 @@ fun DetailScreen() {
 
         item {
             Text(
-                text = data.tagline,
+                text = data?.tagline ?: "",
                 modifier = Modifier
                     .fillParentMaxWidth()
                     .padding(horizontal = 32.dp),
@@ -241,7 +222,7 @@ fun DetailScreen() {
 
         item {
             Text(
-                text = data.description,
+                text = data?.description ?: "",
                 modifier = Modifier
                     .fillParentMaxWidth()
                     .padding(horizontal = 32.dp),
@@ -275,7 +256,7 @@ fun DetailScreen() {
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = data.originalTitle,
+                    text = data?.originalTitle ?: "",
                     modifier = Modifier
                         .fillParentMaxWidth()
                         .padding(horizontal = 32.dp),
@@ -311,7 +292,7 @@ fun DetailScreen() {
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
-                        text = data.runTime,
+                        text = data?.runTime ?: "",
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 32.dp),
@@ -340,7 +321,7 @@ fun DetailScreen() {
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
-                        text = data.voteCount.toString(),
+                        text = data?.voteCount.toString(),
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 32.dp),
@@ -386,7 +367,7 @@ fun DetailScreen() {
                     Spacer(modifier = Modifier.width(8.dp))
 
                     Text(
-                        text = data.voteCount.toString(),
+                        text = data?.voteCount.toString(),
                         modifier = Modifier
                             .fillMaxWidth(),
                         style = MaterialTheme.typography.titleLarge.copy(
@@ -402,7 +383,9 @@ fun DetailScreen() {
 
         item {
             Text(
-                modifier = Modifier.fillParentMaxWidth().padding(horizontal = 32.dp),
+                modifier = Modifier
+                    .fillParentMaxWidth()
+                    .padding(horizontal = 32.dp),
                 text = "You Might Also Like",
                 style = MaterialTheme.typography.titleLarge.copy(
                     color = MaterialTheme.colorScheme.onBackground,
@@ -452,6 +435,6 @@ fun DetailScreen() {
 @Composable
 fun PreviewDetailScreen() {
     MovieAppTheme {
-        DetailScreen()
+        DetailScreen(uiState = MutableStateFlow(MovieDetailUiState().mock()).collectAsStateWithLifecycle())
     }
 }

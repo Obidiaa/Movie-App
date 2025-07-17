@@ -143,7 +143,7 @@ fun Content(
                             .fillParentMaxHeight(0.3f)
                             .animateItem(),
                         itemClick = {
-                            navigate(DetailScreenRoute)
+                            navigate(DetailScreenRoute(it))
                         }
                     )
                 }
@@ -167,7 +167,7 @@ fun Content(
                             .fillParentMaxHeight(0.3f)
                             .animateItem(),
                         itemClick = {
-                            navigate(DetailScreenRoute)
+                            navigate(DetailScreenRoute(it))
                         }
                     )
                 }
@@ -191,7 +191,7 @@ fun Content(
                             .fillParentMaxHeight(0.3f)
                             .animateItem(),
                         itemClick = {
-                            navigate(DetailScreenRoute)
+                            navigate(DetailScreenRoute(it))
                         }
                     )
                 }
@@ -235,7 +235,7 @@ fun Content(
                             .fillParentMaxHeight(0.3f)
                             .animateItem(),
                         itemClick = {
-                            navigate(DetailScreenRoute)
+                            navigate(DetailScreenRoute(it))
                         }
                     )
                 }
@@ -259,7 +259,7 @@ fun Content(
                             .fillParentMaxHeight(0.3f)
                             .animateItem(),
                         itemClick = {
-                            navigate(DetailScreenRoute)
+                            navigate(DetailScreenRoute(it))
                         }
                     )
                 }
@@ -283,7 +283,7 @@ fun Content(
                             .fillParentMaxHeight(0.3f)
                             .animateItem(),
                         itemClick = {
-                            navigate(DetailScreenRoute)
+                            navigate(DetailScreenRoute(it))
                         }
                     )
                 }
@@ -428,7 +428,7 @@ fun HeaderMovieTrending(
 fun MovieList(
     title: String, list: LazyPagingItems<ItemModel>,
     modifier: Modifier,
-    itemClick: () -> Unit
+    itemClick: (movieId: Int) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -451,7 +451,11 @@ fun MovieList(
         ) {
             item { Spacer(modifier = Modifier.width(0.dp)) }
 
-            items(list) { movie -> MovieItem(movie, Modifier.clickable { itemClick() }) }
+            items(list) { movie ->
+                MovieItem(
+                    movie,
+                    Modifier.clickable { itemClick(movie?.id ?: 0) })
+            }
 
             list.apply {
                 when {

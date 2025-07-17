@@ -2,6 +2,7 @@ package com.obidia.movieapp.data.repository
 
 import com.obidia.movieapp.data.remote.api.ApiServices
 import com.obidia.movieapp.data.remote.response.CategoryListResponse
+import com.obidia.movieapp.data.remote.response.MovieDetailResponse
 import com.obidia.movieapp.data.remote.response.MovieListResponse
 import com.obidia.movieapp.data.remote.response.SearchListResponse
 import com.obidia.movieapp.data.remote.response.TvListResponse
@@ -129,5 +130,11 @@ class RemoteDataSource @Inject constructor(
         page: Int,
     ): SearchListResponse {
         return apiServices.getSearch(query = query, page = page)
+    }
+
+    suspend fun getMovieDetail(
+        movieId: Int
+    ): Response<MovieDetailResponse> {
+        return apiServices.getMovieDetail(movieId = movieId)
     }
 }

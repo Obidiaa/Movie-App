@@ -16,4 +16,4 @@ data object SearchScreenRoute : MainScreen
 data object BookMarkScreenRoute : MainScreen
 
 @Serializable
-data object DetailScreenRoute : Route
+data class DetailScreenRoute(val movieId: Int) : Route

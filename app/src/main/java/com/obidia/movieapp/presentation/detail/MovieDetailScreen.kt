@@ -1,5 +1,7 @@
 package com.obidia.movieapp.presentation.detail
 
+import android.annotation.SuppressLint
+import android.graphics.drawable.BitmapDrawable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -7,29 +9,38 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.staggeredgrid.LazyHorizontalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -46,150 +57,237 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import androidx.palette.graphics.Palette
+import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.obidia.movieapp.R
+import com.obidia.movieapp.presentation.home.toNonHardwareBitmap
 import com.obidia.movieapp.presentation.util.DetailScreenRoute
 import com.obidia.movieapp.ui.theme.MovieAppTheme
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.withContext
 
 fun NavGraphBuilder.detailScreenRoute() {
     composable<DetailScreenRoute> {
         val viewModel = hiltViewModel<MovieDetailViewModel>()
-        DetailScreen(uiState = viewModel.uiState.collectAsStateWithLifecycle())
+        DetailScreen(
+            uiState = viewModel.uiState.collectAsStateWithLifecycle(),
+            action = viewModel::action
+        )
     }
 }
 
+@SuppressLint("DefaultLocale")
 @Composable
 fun DetailScreen(
     uiState: State<MovieDetailUiState>,
+    action: (MovieDetailAction) -> Unit
 ) {
     val data = uiState.value.movieDetail
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        item {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillParentMaxWidth()
-                    .height(56.dp)
-                    .padding(horizontal = 32.dp)
-            ) {
-                Icon(
-                    tint = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.size(32.dp),
-                    imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_left),
-                    contentDescription = ""
-                )
+    var imagePainter: AsyncImagePainter? = null
 
-                Icon(
-                    tint = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.size(32.dp),
-                    imageVector = ImageVector.vectorResource(R.drawable.ic_bookmark),
-                    contentDescription = ""
-                )
+    data?.backdropPath?.let {
+        imagePainter = rememberAsyncImagePainter(data.backdropPath)
+    }
+
+    LaunchedEffect(imagePainter) {
+        imagePainter?.let {
+            if (data?.backdropPath?.isEmpty() == true) return@LaunchedEffect
+            val bitmap =
+                (it.imageLoader.execute(it.request).drawable as? BitmapDrawable)?.bitmap?.toNonHardwareBitmap()
+                    ?: return@LaunchedEffect
+            val palette = withContext(Dispatchers.Default) {
+                bitmap.let { bitmap ->
+                    Palette.from(bitmap).generate()
+                }
+            }
+            palette.vibrantSwatch?.let { swatch ->
+                action(MovieDetailAction.OnChangeTopBarColor(Color(swatch.rgb).copy(alpha = 0.4f)))
             }
         }
+    }
 
+    LazyColumn(
+        modifier = Modifier.fillMaxSize()
+    ) {
         item {
-            Box(
+            Column(
                 modifier = Modifier
-                    .fillParentMaxHeight(0.6f)
                     .fillParentMaxWidth()
-                    .clip(RoundedCornerShape(12.dp))
-                    .padding(32.dp)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            0.8f to (uiState.value.topBarColor?.copy(alpha = 0.4f)
+                                ?: MaterialTheme.colorScheme.background),
+                            1f to MaterialTheme.colorScheme.background,
+                        )
+                    )
             ) {
-                Image(
-                    colorFilter = ColorFilter.tint(
-                        color = MaterialTheme.colorScheme.background.copy(
-                            alpha = 0.6f
-                        ), blendMode = BlendMode.Darken
-                    ),
+                Spacer(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(12.dp))
-                        .fillMaxSize()
-                        .background(
-                            color = MaterialTheme.colorScheme.surfaceVariant,
-                            shape = RoundedCornerShape(4.dp)
-                        ),
-                    imageVector = ImageVector.vectorResource(R.drawable.img_loading),
-                    contentDescription = "",
-                    contentScale = ContentScale.FillBounds
+                        .height(
+                            WindowInsets.statusBars
+                                .asPaddingValues()
+                                .calculateTopPadding()
+                        )
                 )
+
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillParentMaxWidth()
+                        .height(56.dp)
+                ) {
+                    Icon(
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier
+                            .padding(start = 32.dp)
+                            .size(32.dp),
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_left),
+                        contentDescription = ""
+                    )
+
+                    Icon(
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier
+                            .padding(end = 32.dp)
+                            .size(32.dp),
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_bookmark),
+                        contentDescription = ""
+                    )
+                }
+
+                Box(
+                    modifier = Modifier
+                        .fillParentMaxWidth()
+                        .aspectRatio(16 / 9f)
+                ) {
+                    AsyncImage(
+                        error = painterResource(id = R.drawable.img_broken),
+                        placeholder = painterResource(id = R.drawable.img_loading),
+                        model = data?.backdropPath,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                color = MaterialTheme.colorScheme.surfaceVariant,
+                                shape = RoundedCornerShape(4.dp)
+                            ),
+                        contentDescription = "",
+                        contentScale = ContentScale.FillBounds
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
 
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 12.dp)
-                        .align(Alignment.BottomCenter)
+                        .fillParentMaxHeight(0.3f)
+                        .padding(horizontal = 16.dp)
+                        .background(Color.Green),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column {
-                        Text(
-                            text = data?.title ?: "",
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontSize = 24.sp,
-                                color = MaterialTheme.colorScheme.onBackground,
-                                fontWeight = FontWeight.Bold
-                            )
+                    if (!data?.posterPath.isNullOrEmpty()) {
+                        AsyncImage(
+                            model = "https://image.tmdb.org/t/p/w342${data?.posterPath}", // Construct full URL
+                            contentDescription = "Movie Poster",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .padding(end = 16.dp)
+                                .weight(0.4f)
+                                .fillMaxHeight()
                         )
-
-                        Spacer(modifier = Modifier.height(12.dp))
-
-                        Text(
-                            text = data?.date ?: "",
-                            maxLines = 1,
-                            style = MaterialTheme.typography.titleLarge.copy(
-                                fontSize = 16.sp,
-                                color = MaterialTheme.colorScheme.onBackground,
-                            )
-                        )
-
-                        Spacer(modifier = Modifier.height(24.dp))
-                    }
-                }
-            }
-        }
-
-        item {
-            LazyHorizontalStaggeredGrid(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalItemSpacing = 8.dp,
-                modifier = Modifier
-                    .fillParentMaxWidth()
-                    .fillParentMaxHeight(0.1f),
-                rows = StaggeredGridCells.Fixed(2),
-            ) {
-                item { Spacer(Modifier.width(24.dp)) }
-                item { Spacer(Modifier.width(24.dp)) }
-                itemsIndexed(items = data?.listGenre ?: listOf()) { index, item ->
-                    Row {
+                    } else {
+                        // Placeholder if no poster path
                         Box(
-                            modifier = Modifier.background(
-                                color = MaterialTheme.colorScheme.primaryContainer,
-                                shape = RoundedCornerShape(100.dp)
-                            )
+                            modifier = Modifier
+                                .width(120.dp)
+                                .height(180.dp)
+                                .padding(end = 16.dp)
+                                .weight(0.4f),
+                            contentAlignment = Alignment.Center
                         ) {
+                            Text("No Poster", style = MaterialTheme.typography.bodySmall)
+                        }
+                    }
+
+                    Column(
+                        modifier = Modifier.weight(0.6f).background(Color.Blue).fillMaxHeight()
+                    ) {
+                        Text(
+                            text = data?.title?: "",
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                        if (data?.title != data?.originalTitle) {
                             Text(
-                                modifier = Modifier
-                                    .align(Alignment.Center)
-                                    .padding(8.dp),
-                                text = item,
-                                style = MaterialTheme.typography.labelLarge.copy(
-                                    fontSize = 16.sp,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                                )
+                                text = "(${data?.originalTitle})",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                imageVector = Icons.Filled.Star,
+                                contentDescription = "Rating Star",
+                                tint = Color(0xFFFFC107), // A nice gold color
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = String.format("%.1f/10", data?.voteAverage),
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = "Release Date: ${data?.releaseDate}",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = "Runtime: ${data?.runtime} minutes",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = "Genre(s): ${data?.genres?.joinToString(", ")}",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                }
 
-                        if (
-                            index in ((data?.listGenre?.size ?: 0) - 2..<(data?.listGenre?.size ?: 0))
-                        ) {
-                            Spacer(modifier = Modifier.width(32.dp))
+                Spacer(modifier = Modifier.height(16.dp))
+
+                LazyRow(
+                    modifier = Modifier
+                        .fillParentMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    itemsIndexed(items = data?.genres ?: listOf()) { _, item ->
+                        Row {
+                            Box(
+                                modifier = Modifier.background(
+                                    color = MaterialTheme.colorScheme.primaryContainer,
+                                    shape = RoundedCornerShape(100.dp)
+                                )
+                            ) {
+                                Text(
+                                    modifier = Modifier
+                                        .align(Alignment.Center)
+                                        .padding(8.dp),
+                                    text = item,
+                                    style = MaterialTheme.typography.labelLarge.copy(
+                                        fontSize = 16.sp,
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                                    )
+                                )
+                            }
                         }
                     }
                 }
@@ -201,28 +299,12 @@ fun DetailScreen(
         }
 
         item {
-            Text(
-                text = data?.tagline ?: "",
-                modifier = Modifier
-                    .fillParentMaxWidth()
-                    .padding(horizontal = 32.dp),
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.titleLarge.copy(
-                    fontStyle = FontStyle.Italic,
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onBackground,
-                )
-            )
-        }
-
-        item {
             Spacer(modifier = Modifier.height(16.dp))
         }
 
         item {
             Text(
-                text = data?.description ?: "",
+                text = data?.overview ?: "",
                 modifier = Modifier
                     .fillParentMaxWidth()
                     .padding(horizontal = 32.dp),
@@ -292,7 +374,7 @@ fun DetailScreen(
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
-                        text = data?.runTime ?: "",
+                        text = data?.runtime ?: "",
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 32.dp),
@@ -321,7 +403,7 @@ fun DetailScreen(
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
-                        text = data?.voteCount.toString(),
+                        text = data?.voteAverage.toString(),
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 32.dp),
@@ -367,7 +449,7 @@ fun DetailScreen(
                     Spacer(modifier = Modifier.width(8.dp))
 
                     Text(
-                        text = data?.voteCount.toString(),
+                        text = data?.voteAverage.toString(),
                         modifier = Modifier
                             .fillMaxWidth(),
                         style = MaterialTheme.typography.titleLarge.copy(
@@ -435,6 +517,8 @@ fun DetailScreen(
 @Composable
 fun PreviewDetailScreen() {
     MovieAppTheme {
-        DetailScreen(uiState = MutableStateFlow(MovieDetailUiState().mock()).collectAsStateWithLifecycle())
+        DetailScreen(
+            uiState = MutableStateFlow(MovieDetailUiState().mock()).collectAsStateWithLifecycle(),
+            action = {})
     }
 }

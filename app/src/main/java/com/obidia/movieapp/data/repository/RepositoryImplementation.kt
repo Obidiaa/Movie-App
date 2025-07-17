@@ -1,5 +1,6 @@
 package com.obidia.movieapp.data.repository
 
+import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -12,12 +13,14 @@ import com.obidia.movieapp.data.paging.GetSearchPagingSource
 import com.obidia.movieapp.data.paging.GetTvAiringPagingSource
 import com.obidia.movieapp.data.paging.GetTvPopularPagingSource
 import com.obidia.movieapp.data.paging.GetTvTopRatedPagingSource
-import com.obidia.movieapp.data.remote.response.Genre
+import com.obidia.movieapp.data.remote.response.GenreMovieResponse
+import com.obidia.movieapp.data.remote.response.MovieDetailResponse
 import com.obidia.movieapp.data.remote.response.MovieItemResponse
 import com.obidia.movieapp.data.remote.response.TvItemResponse
 import com.obidia.movieapp.data.utils.Resource
 import com.obidia.movieapp.domain.model.CategoryModel
 import com.obidia.movieapp.domain.model.ItemModel
+import com.obidia.movieapp.domain.model.MovieDetailModel
 import com.obidia.movieapp.domain.repo.Repository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -66,7 +69,7 @@ class RepositoryImplementation @Inject constructor(
             try {
                 val response = remoteDataSource.getCategory()
                 response.body()?.let {
-                    val data = Genre.transform(it.genres)
+                    val data = GenreMovieResponse.transform(it.genres)
                     emit(Resource.Success(data))
                 } ?: kotlin.run {
                     throw HttpException(response)
@@ -84,7 +87,7 @@ class RepositoryImplementation @Inject constructor(
             try {
                 val response = remoteDataSource.getTvCategory()
                 response.body()?.let {
-                    val data = Genre.transform(it.genres)
+                    val data = GenreMovieResponse.transform(it.genres)
                     emit(Resource.Success(data))
                 } ?: kotlin.run {
                     throw HttpException(response)
@@ -265,5 +268,23 @@ class RepositoryImplementation @Inject constructor(
                 GetSearchPagingSource(remoteDataSource, query = query)
             }
         ).flow
+    }
+
+    override fun getMovieDetail(movieId: Int): Flow<Resource<MovieDetailModel>> {
+        return flow {
+            emit(Resource.Loading)
+
+            try {
+                val response = remoteDataSource.getMovieDetail(movieId = movieId)
+                response.body()?.let {
+                    Log.d("Kesini response", "getMovieDetail: $it")
+                    emit(Resource.Success(MovieDetailResponse.transform(it)))
+                } ?: kotlin.run {
+                    throw HttpException(response)
+                }
+            } catch (e: Exception) {
+                emit(Resource.Error(e))
+            }
+        }
     }
 }

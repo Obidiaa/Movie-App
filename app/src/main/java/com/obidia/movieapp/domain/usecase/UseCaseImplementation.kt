@@ -4,6 +4,7 @@ import androidx.paging.PagingData
 import com.obidia.movieapp.data.utils.Resource
 import com.obidia.movieapp.domain.model.CategoryModel
 import com.obidia.movieapp.domain.model.ItemModel
+import com.obidia.movieapp.domain.model.MovieDetailModel
 import com.obidia.movieapp.domain.repo.Repository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -61,5 +62,9 @@ class UseCaseImplementation @Inject constructor(
 
     override fun getSearch(query: String): Flow<PagingData<ItemModel>> {
         return repository.getSearch(query)
+    }
+
+    override fun getMovieDetail(movieId: Int): Flow<Resource<MovieDetailModel>> {
+        return repository.getMovieDetail(movieId)
     }
 }

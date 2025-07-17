@@ -62,7 +62,7 @@ data class MovieDetailResponse(
     companion object {
         fun transform(response: MovieDetailResponse) = MovieDetailModel(
             backdropPath = "https://image.tmdb.org/t/p/w500/${response.backdropPath ?: ""}",
-            posterPath = "https://image.tmdb.org/t/p/w500/${response.backdropPath ?: ""}",
+            posterPath = "https://image.tmdb.org/t/p/w500/${response.posterPath ?: ""}",
             title = response.title ?: "",
             releaseDate = response.releaseDate ?: "",
             isBookmark = false,
@@ -73,7 +73,11 @@ data class MovieDetailResponse(
             voteAverage = response.voteAverage ?: 0.0,
             listRecommendation = listOf(),
             budget = response.budget ?: 0,
-            revenue = response.revenue ?: 0
+            revenue = response.revenue ?: 0,
+            voteCount = response.voteCount.toString(),
+            originalLanguage = response.originalLanguage ?: "",
+            originalCountry = response.originCountry?.joinToString(",") ?: "",
+            imdbId = response.imdbId ?: ""
         )
     }
 }

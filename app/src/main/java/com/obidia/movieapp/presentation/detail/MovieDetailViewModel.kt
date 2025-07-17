@@ -78,7 +78,8 @@ data class MovieDetailUiState(
             posterPath = "/hinHiXl8sOGIz2TLIZNpO5rhjND.jpg", // This would be a full URL in a real app
             backdropPath = "/uNRfK14Ga8Hwfqt07vo8nvWQN1i.jpg", // This would be a full URL in a real app
             isBookmark = false,
-            listRecommendation = listOf()
+            listRecommendation = listOf(),
+            "", "", "", ""
         )
     )
 }

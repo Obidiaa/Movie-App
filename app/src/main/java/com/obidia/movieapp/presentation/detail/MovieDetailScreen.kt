@@ -23,9 +23,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.staggeredgrid.LazyHorizontalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
@@ -40,7 +37,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -119,7 +115,7 @@ fun DetailScreen(
                     .fillParentMaxWidth()
                     .background(
                         brush = Brush.verticalGradient(
-                            0.8f to (uiState.value.topBarColor?.copy(alpha = 0.4f)
+                            0.8f to (uiState.value.topBarColor?.copy(alpha = 0.2f)
                                 ?: MaterialTheme.colorScheme.background),
                             1f to MaterialTheme.colorScheme.background,
                         )
@@ -136,7 +132,7 @@ fun DetailScreen(
 
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
+                    verticalAlignment = Alignment.Top,
                     modifier = Modifier
                         .fillParentMaxWidth()
                         .height(56.dp)
@@ -183,30 +179,27 @@ fun DetailScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Row(
+                    horizontalArrangement = Arrangement.Center,
                     modifier = Modifier
                         .fillMaxWidth()
                         .fillParentMaxHeight(0.3f)
-                        .padding(horizontal = 16.dp)
-                        .background(Color.Green),
+                        .padding(horizontal = 16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     if (!data?.posterPath.isNullOrEmpty()) {
                         AsyncImage(
-                            model = "https://image.tmdb.org/t/p/w342${data?.posterPath}", // Construct full URL
+                            model = data.posterPath, // Construct full URL
                             contentDescription = "Movie Poster",
-                            contentScale = ContentScale.Crop,
+                            contentScale = ContentScale.FillBounds,
                             modifier = Modifier
-                                .padding(end = 16.dp)
                                 .weight(0.4f)
                                 .fillMaxHeight()
                         )
                     } else {
-                        // Placeholder if no poster path
                         Box(
                             modifier = Modifier
                                 .width(120.dp)
                                 .height(180.dp)
-                                .padding(end = 16.dp)
                                 .weight(0.4f),
                             contentAlignment = Alignment.Center
                         ) {
@@ -215,21 +208,30 @@ fun DetailScreen(
                     }
 
                     Column(
-                        modifier = Modifier.weight(0.6f).background(Color.Blue).fillMaxHeight()
+                        modifier = Modifier
+                            .weight(0.6f)
+                            .fillMaxHeight()
+                            .padding(start = 16.dp),
+                        verticalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = data?.title?: "",
-                            style = MaterialTheme.typography.headlineMedium,
-                            fontWeight = FontWeight.Bold
+                            modifier = Modifier.padding(bottom = 4.dp),
+                            text = data?.title ?: "",
+                            maxLines = 2,
+                            style = MaterialTheme.typography.headlineMedium.copy(
+                                color = MaterialTheme.colorScheme.onBackground,
+                                fontWeight = FontWeight.Bold,
+                            ),
                         )
                         if (data?.title != data?.originalTitle) {
                             Text(
                                 text = "(${data?.originalTitle})",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                style = MaterialTheme.typography.bodyMedium.copy(
+                                    color = MaterialTheme.colorScheme.onBackground
+                                ),
                             )
                         }
-                        Spacer(modifier = Modifier.height(8.dp))
+
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
                                 imageVector = Icons.Filled.Star,
@@ -240,23 +242,38 @@ fun DetailScreen(
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(
                                 text = String.format("%.1f/10", data?.voteAverage),
-                                style = MaterialTheme.typography.bodyLarge
+                                style = MaterialTheme.typography.bodyLarge.copy(
+                                    color = MaterialTheme.colorScheme.onBackground
+                                )
                             )
                         }
-                        Spacer(modifier = Modifier.height(4.dp))
+
                         Text(
                             text = "Release Date: ${data?.releaseDate}",
-                            style = MaterialTheme.typography.bodyMedium
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
                         )
-                        Spacer(modifier = Modifier.height(4.dp))
+
                         Text(
                             text = "Runtime: ${data?.runtime} minutes",
-                            style = MaterialTheme.typography.bodyMedium
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
                         )
-                        Spacer(modifier = Modifier.height(4.dp))
+
                         Text(
-                            text = "Genre(s): ${data?.genres?.joinToString(", ")}",
-                            style = MaterialTheme.typography.bodyMedium
+                            text = "Vote Average: ${data?.voteAverage}",
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                        )
+
+                        Text(
+                            text = "Revenue: ${data?.revenue}",
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
                         )
                     }
                 }
@@ -299,175 +316,53 @@ fun DetailScreen(
         }
 
         item {
+            Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+                Text(
+                    text = "Overview",
+                    style = MaterialTheme.typography.headlineSmall.copy(
+                        color = MaterialTheme.colorScheme.onBackground
+                    ),
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = data?.overview ?: "",
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                )
+            }
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        item {
+            Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+                Text(
+                    "Movie More Info",
+                    style = MaterialTheme.typography.titleMedium.copy(color = MaterialTheme.colorScheme.onBackground)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+
+                InfoRow("Original Language", data?.originalLanguage?.uppercase() ?: "")
+                InfoRow("Country", data?.originalCountry ?: "")
+                InfoRow("Vote", "${data?.voteAverage} (${data?.voteCount} votes)")
+                InfoRow("Budget", "$${data?.budget}")
+                InfoRow("IMDB ID", data?.imdbId ?: "")
+            }
+        }
+
+        item {
             Spacer(modifier = Modifier.height(16.dp))
         }
 
         item {
             Text(
-                text = data?.overview ?: "",
                 modifier = Modifier
                     .fillParentMaxWidth()
-                    .padding(horizontal = 32.dp),
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.titleLarge.copy(
-                    textAlign = TextAlign.Justify,
-                    fontStyle = FontStyle.Italic,
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onBackground,
-                )
-            )
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(16.dp))
-        }
-
-        item {
-            Column {
-                Text(
-                    text = "Original Title",
-                    modifier = Modifier
-                        .fillParentMaxWidth()
-                        .padding(horizontal = 32.dp),
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = data?.originalTitle ?: "",
-                    modifier = Modifier
-                        .fillParentMaxWidth()
-                        .padding(horizontal = 32.dp),
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.onBackground,
-                    )
-                )
-            }
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(16.dp))
-        }
-
-        item {
-            Row(modifier = Modifier.fillParentMaxWidth()) {
-                Column(
-                    modifier = Modifier.fillParentMaxWidth(0.5f),
-                    horizontalAlignment = Alignment.Start
-                ) {
-                    Text(
-                        text = "Runtime",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 32.dp),
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            fontSize = 16.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Text(
-                        text = data?.runtime ?: "",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 32.dp),
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            fontSize = 16.sp,
-                            color = MaterialTheme.colorScheme.onBackground,
-                        )
-                    )
-                }
-
-                Column(
-                    modifier = Modifier.fillParentMaxWidth(0.5f),
-                    horizontalAlignment = Alignment.Start
-                ) {
-                    Text(
-                        text = "Vote Count",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 32.dp),
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            fontSize = 16.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Text(
-                        text = data?.voteAverage.toString(),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 32.dp),
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            fontSize = 16.sp,
-                            color = MaterialTheme.colorScheme.onBackground,
-                        )
-                    )
-                }
-            }
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(16.dp))
-        }
-
-        item {
-            Column(
-                modifier = Modifier
-                    .fillParentMaxWidth()
-                    .padding(horizontal = 32.dp),
-                horizontalAlignment = Alignment.Start
-            ) {
-                Text(
-                    text = "Vote Average",
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_start),
-                        contentDescription = "",
-                        tint = MaterialTheme.colorScheme.tertiary
-                    )
-
-                    Spacer(modifier = Modifier.width(8.dp))
-
-                    Text(
-                        text = data?.voteAverage.toString(),
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            fontSize = 16.sp,
-                            color = MaterialTheme.colorScheme.onBackground,
-                        )
-                    )
-                }
-            }
-        }
-
-        item { Spacer(modifier = Modifier.height(16.dp)) }
-
-        item {
-            Text(
-                modifier = Modifier
-                    .fillParentMaxWidth()
-                    .padding(horizontal = 32.dp),
+                    .padding(horizontal = 16.dp),
                 text = "You Might Also Like",
                 style = MaterialTheme.typography.titleLarge.copy(
                     color = MaterialTheme.colorScheme.onBackground,
@@ -484,7 +379,7 @@ fun DetailScreen(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 item {
-                    Spacer(modifier = Modifier.width(20.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
                 }
 
                 items(count = 10) {
@@ -502,7 +397,7 @@ fun DetailScreen(
                 }
 
                 item {
-                    Spacer(modifier = Modifier.width(24.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
                 }
             }
         }
@@ -510,6 +405,25 @@ fun DetailScreen(
         item {
             Spacer(modifier = Modifier.height(32.dp))
         }
+    }
+}
+
+@Composable
+fun InfoRow(label: String, value: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            label,
+            style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onBackground)
+        )
+        Text(
+            value,
+            style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onBackground)
+        )
     }
 }
 

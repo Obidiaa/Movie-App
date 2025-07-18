@@ -41,10 +41,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -140,7 +137,7 @@ fun DetailScreen(
                     Icon(
                         tint = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier
-                            .padding(start = 32.dp)
+                            .padding(start = 16.dp)
                             .size(32.dp),
                         imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_left),
                         contentDescription = ""
@@ -149,7 +146,7 @@ fun DetailScreen(
                     Icon(
                         tint = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier
-                            .padding(end = 32.dp)
+                            .padding(end = 16.dp)
                             .size(32.dp),
                         imageVector = ImageVector.vectorResource(R.drawable.ic_bookmark),
                         contentDescription = ""
@@ -188,7 +185,7 @@ fun DetailScreen(
                 ) {
                     if (!data?.posterPath.isNullOrEmpty()) {
                         AsyncImage(
-                            model = data.posterPath, // Construct full URL
+                            model = data?.posterPath, // Construct full URL
                             contentDescription = "Movie Poster",
                             contentScale = ContentScale.FillBounds,
                             modifier = Modifier

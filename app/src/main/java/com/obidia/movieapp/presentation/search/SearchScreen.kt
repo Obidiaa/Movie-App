@@ -1,6 +1,7 @@
 package com.obidia.movieapp.presentation.search
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -27,7 +28,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -43,16 +44,17 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.obidia.movieapp.R
 import com.obidia.movieapp.presentation.home.MovieItem
 import com.obidia.movieapp.presentation.home.MovieItemPlaceholder
+import com.obidia.movieapp.presentation.util.DetailScreenRoute
 import com.obidia.movieapp.presentation.util.Route
 import com.obidia.movieapp.presentation.util.SearchScreenRoute
-import com.obidia.movieapp.presentation.util.robotoFamily
 
 fun NavGraphBuilder.searchScreenRoute(navigate: (Route) -> Unit) {
     composable<SearchScreenRoute> {
         val viewModel: SearchViewModel = hiltViewModel()
         SearchScreen(
             viewModel.uiState.collectAsStateWithLifecycle(),
-            viewModel::searchEvents
+            viewModel::searchEvents,
+            navigate
         )
     }
 }
@@ -61,11 +63,16 @@ fun NavGraphBuilder.searchScreenRoute(navigate: (Route) -> Unit) {
 @Composable
 fun SearchScreen(
     uiStat: State<SearchUiStat>,
-    action: (SearchEvents) -> Unit
+    action: (SearchEvents) -> Unit,
+    navigate: (Route) -> Unit
 ) {
     val list = uiStat.value.listSearch.collectAsLazyPagingItems()
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
         Spacer(
             modifier = Modifier.height(
                 WindowInsets.statusBars
@@ -77,6 +84,11 @@ fun SearchScreen(
         TopBar()
 
         BasicTextField(
+            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+            textStyle = MaterialTheme.typography.bodyMedium.copy(
+                fontSize = 20.sp,
+                color = MaterialTheme.colorScheme.primary
+            ),
             modifier = Modifier.fillMaxWidth(),
             value = uiStat.value.textSearch,
             onValueChange = {
@@ -85,10 +97,10 @@ fun SearchScreen(
             decorationBox = { innerTextField ->
                 OutlinedTextFieldDefaults.DecorationBox(
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = MaterialTheme.colorScheme.inverseSurface,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.inverseSurface,
-                        unfocusedContainerColor = MaterialTheme.colorScheme.inverseSurface,
-                        focusedContainerColor = MaterialTheme.colorScheme.inverseSurface,
+                        focusedBorderColor = MaterialTheme.colorScheme.surfaceContainer,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.surfaceContainer,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                        focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
                     ),
                     value = uiStat.value.textSearch,
                     innerTextField = innerTextField,
@@ -100,10 +112,15 @@ fun SearchScreen(
                         Text(
                             modifier = Modifier.fillMaxWidth(),
                             text = "Search Movie",
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                fontSize = 20.sp,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
                         )
                     },
                     leadingIcon = {
                         Icon(
+                            tint = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.padding(start = 8.dp),
                             imageVector = ImageVector.vectorResource(R.drawable.ic_search),
                             contentDescription = ""
@@ -112,6 +129,7 @@ fun SearchScreen(
                     trailingIcon = {
                         if (uiStat.value.textSearch.isNotEmpty()) {
                             Icon(
+                                tint = MaterialTheme.colorScheme.onSurface,
                                 modifier = Modifier
                                     .padding(end = 8.dp)
                                     .clickable {
@@ -122,20 +140,6 @@ fun SearchScreen(
                             )
                         }
                     },
-                    container = {
-                        OutlinedTextFieldDefaults.ContainerBox(
-                            shape = RectangleShape,
-                            enabled = true,
-                            isError = false,
-                            interactionSource = remember { MutableInteractionSource() },
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = MaterialTheme.colorScheme.inverseSurface,
-                                unfocusedBorderColor = MaterialTheme.colorScheme.inverseSurface,
-                                unfocusedContainerColor = MaterialTheme.colorScheme.inverseSurface,
-                                focusedContainerColor = MaterialTheme.colorScheme.inverseSurface,
-                            )
-                        )
-                    }
                 )
             }
         )
@@ -145,10 +149,11 @@ fun SearchScreen(
                 modifier = Modifier
                     .padding(horizontal = 16.dp, vertical = 16.dp),
                 text = "Movies and Tv Show",
-                color = MaterialTheme.colorScheme.onSecondary,
-                fontFamily = robotoFamily,
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp
+                style = MaterialTheme.typography.titleMedium.copy(
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp
+                )
             )
 
             LazyVerticalGrid(
@@ -160,7 +165,11 @@ fun SearchScreen(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(list.itemCount) {
-                    MovieItem(item = list[it])
+                    MovieItem(
+                        item = list[it], modifier = Modifier.clickable {
+                            navigate(DetailScreenRoute(list[it]?.id ?: 0))
+                        }
+                    )
                 }
 
                 list.apply {
@@ -198,13 +207,13 @@ fun TopBar() {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Icon(
-                tint = MaterialTheme.colorScheme.surfaceTint,
+                tint = MaterialTheme.colorScheme.onBackground,
                 imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_back),
                 contentDescription = "search"
             )
 
             Icon(
-                tint = MaterialTheme.colorScheme.surfaceTint,
+                tint = MaterialTheme.colorScheme.onBackground,
                 imageVector = ImageVector.vectorResource(R.drawable.ic_bookmark),
                 contentDescription = "bookmark"
             )

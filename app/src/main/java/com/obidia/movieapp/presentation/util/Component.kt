@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -24,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -45,6 +47,16 @@ fun StatusBarSpace() {
     Spacer(
         modifier = Modifier.height(
             WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
+        )
+    )
+}
+
+@Composable
+fun SystemBarSpace() {
+    Spacer(
+        modifier = Modifier.height(
+            WindowInsets.systemBars.asPaddingValues(LocalDensity.current)
+                .calculateBottomPadding()
         )
     )
 }

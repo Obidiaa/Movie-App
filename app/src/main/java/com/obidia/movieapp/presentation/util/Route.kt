@@ -4,16 +4,16 @@ import kotlinx.serialization.Serializable
 
 sealed interface Route
 
-sealed interface MainScreen : Route
+sealed interface MainScreenRoute : Route
 
 @Serializable
-data object HomeScreenRoute : MainScreen
+data object HomeScreenRoute : MainScreenRoute
 
 @Serializable
-data object SearchScreenRoute : MainScreen
+data object SearchScreenRoute : MainScreenRoute
 
 @Serializable
-data object BookMarkScreenRoute : MainScreen
+data object BookMarkScreenRoute : MainScreenRoute
 
 @Serializable
 data class DetailScreenRoute(val movieId: Int) : Route

@@ -35,6 +35,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavBackStackEntry
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.items
@@ -43,9 +44,7 @@ import com.obidia.movieapp.domain.model.ItemModel
 import com.obidia.movieapp.presentation.util.BaseCard
 import com.obidia.movieapp.presentation.util.BaseImage
 import com.obidia.movieapp.presentation.util.ColorPellet
-import com.obidia.movieapp.presentation.util.DetailScreenRoute
 import com.obidia.movieapp.presentation.util.MovieItem
-import com.obidia.movieapp.presentation.util.Route
 import com.obidia.movieapp.presentation.util.StatusBarSpace
 import com.obidia.movieapp.presentation.util.shimmerEffect
 import com.obidia.movieapp.ui.theme.robotoFamily
@@ -67,7 +66,8 @@ fun Content(
     listTop10Tv: State<Resource<List<ItemModel>>?>,
     action: (HomeAction) -> Unit,
     backgroundColor: Color?,
-    navigate: (Route) -> Unit
+    navigateToDetail: (Int, NavBackStackEntry) -> Unit,
+    navBackStackEntry: NavBackStackEntry
 ) {
     AnimatedVisibility(
         visible = contentVisible,
@@ -104,9 +104,11 @@ fun Content(
                         modifier = Modifier
                             .fillParentMaxWidth()
                             .fillParentMaxHeight(0.6f),
-                        filmHeader,
+                        filmHeader = filmHeader,
                         action = action,
-                        navigate = navigate
+                        onClickItem = {
+                            navigateToDetail(it, navBackStackEntry)
+                        }
                     )
                 }
             }
@@ -129,7 +131,7 @@ fun Content(
                             .fillParentMaxHeight(0.3f)
                             .animateItem(),
                         itemClick = {
-                            navigate(DetailScreenRoute(it))
+                            navigateToDetail(it, navBackStackEntry)
                         }
                     )
                 }
@@ -153,7 +155,7 @@ fun Content(
                             .fillParentMaxHeight(0.3f)
                             .animateItem(),
                         itemClick = {
-                            navigate(DetailScreenRoute(it))
+                            navigateToDetail(it, navBackStackEntry)
                         }
                     )
                 }
@@ -177,7 +179,7 @@ fun Content(
                             .fillParentMaxHeight(0.3f)
                             .animateItem(),
                         itemClick = {
-                            navigate(DetailScreenRoute(it))
+                            navigateToDetail(it, navBackStackEntry)
                         }
                     )
                 }
@@ -199,7 +201,9 @@ fun Content(
                         modifier = Modifier
                             .fillParentMaxHeight(0.3f)
                             .animateItem(),
-                        navigate = navigate
+                        onClickItem = {
+                            navigateToDetail(it, navBackStackEntry)
+                        }
                     )
                 }
             }
@@ -222,7 +226,7 @@ fun Content(
                             .fillParentMaxHeight(0.3f)
                             .animateItem(),
                         itemClick = {
-                            navigate(DetailScreenRoute(it))
+                            navigateToDetail(it, navBackStackEntry)
                         }
                     )
                 }
@@ -246,7 +250,7 @@ fun Content(
                             .fillParentMaxHeight(0.3f)
                             .animateItem(),
                         itemClick = {
-                            navigate(DetailScreenRoute(it))
+                            navigateToDetail(it, navBackStackEntry)
                         }
                     )
                 }
@@ -270,7 +274,7 @@ fun Content(
                             .fillParentMaxHeight(0.3f)
                             .animateItem(),
                         itemClick = {
-                            navigate(DetailScreenRoute(it))
+                            navigateToDetail(it, navBackStackEntry)
                         }
                     )
                 }
@@ -293,7 +297,9 @@ fun Content(
                         modifier = Modifier
                             .fillParentMaxHeight(0.3f)
                             .animateItem(),
-                        navigate = navigate
+                        onClickItem = {
+                            navigateToDetail(it, navBackStackEntry)
+                        }
                     )
                 }
             }
@@ -309,7 +315,7 @@ fun Content(
 fun FilmListTrending(
     text: String = "Movie Trending",
     modifier: Modifier, list: State<Resource<List<ItemModel>>?>,
-    navigate: (Route) -> Unit
+    onClickItem: (Int) -> Unit,
 ) {
     Column(
         modifier = modifier,
@@ -337,7 +343,7 @@ fun FilmListTrending(
                 is Resource.Success -> {
                     itemsIndexed(items = data.data) { number, item ->
                         ItemTrendingFilm(number = number + 1, model = item, onClick = {
-                            navigate(DetailScreenRoute(item.id))
+                            onClickItem(item.id)
                         })
                     }
                 }
@@ -355,7 +361,7 @@ fun HeaderMovieTrending(
     modifier: Modifier,
     filmHeader: State<Resource<ItemModel>?>,
     action: (HomeAction) -> Unit,
-    navigate: (Route) -> Unit
+    onClickItem: (Int) -> Unit,
 ) {
     Box(
         modifier = modifier
@@ -394,7 +400,7 @@ fun HeaderMovieTrending(
                             )
                             .clip(RoundedCornerShape(12.dp))
                             .clickable {
-                                navigate(DetailScreenRoute(data.data.id))
+                                onClickItem(data.data.id)
                             },
                         contentDescription = "image",
                     )

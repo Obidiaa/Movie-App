@@ -31,26 +31,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.obidia.movieapp.R
 import com.obidia.movieapp.presentation.feature.home.MovieItemPlaceholder
-import com.obidia.movieapp.presentation.util.DetailScreenRoute
 import com.obidia.movieapp.presentation.util.MovieItem
-import com.obidia.movieapp.presentation.util.Route
 import com.obidia.movieapp.presentation.util.SearchScreenRoute
 import com.obidia.movieapp.presentation.util.StatusBarSpace
 import com.obidia.movieapp.presentation.util.TopBar
 
-fun NavGraphBuilder.searchScreenRoute(navigate: (Route) -> Unit) {
+fun NavGraphBuilder.searchScreenRoute(navigateToDetail: (Int, NavBackStackEntry) -> Unit) {
     composable<SearchScreenRoute> {
         val viewModel: SearchViewModel = hiltViewModel()
         SearchScreen(
             viewModel.uiState.collectAsStateWithLifecycle(),
             viewModel::searchEvents,
-            navigate
+            navigateToDetail,
+            it
         )
     }
 }
@@ -60,7 +60,8 @@ fun NavGraphBuilder.searchScreenRoute(navigate: (Route) -> Unit) {
 fun SearchScreen(
     uiStat: State<SearchUiStat>,
     action: (SearchEvents) -> Unit,
-    navigate: (Route) -> Unit
+    navigateToDetail: (Int, NavBackStackEntry) -> Unit,
+    navBackStackEntry: NavBackStackEntry
 ) {
     val list = uiStat.value.listSearch.collectAsLazyPagingItems()
 
@@ -148,7 +149,7 @@ fun SearchScreen(
                 items(list.itemCount) {
                     MovieItem(
                         item = list[it], onClick = {
-                            navigate(DetailScreenRoute(list[it]?.id ?: 0))
+                            navigateToDetail(list[it]?.id ?: 0, navBackStackEntry)
                         }
                     )
                 }
@@ -165,7 +166,7 @@ fun SearchScreen(
 
                         loadState.refresh is LoadState.Error || loadState.append is LoadState.Error -> {
                             Log.d(
-                                "kesini error",
+                                "this it error",
                                 (loadState.refresh as LoadState.Error).error.message ?: ""
                             )
                         }

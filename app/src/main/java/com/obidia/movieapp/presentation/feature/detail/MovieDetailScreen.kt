@@ -50,6 +50,7 @@ import com.obidia.movieapp.presentation.util.BaseImage
 import com.obidia.movieapp.presentation.util.ColorPellet
 import com.obidia.movieapp.presentation.util.DetailScreenRoute
 import com.obidia.movieapp.presentation.util.StatusBarSpace
+import com.obidia.movieapp.presentation.util.SystemBarSpace
 import com.obidia.movieapp.presentation.util.TopBar
 import com.obidia.movieapp.ui.theme.MovieAppTheme
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -342,6 +343,10 @@ fun DetailScreen(
 
         item {
             Spacer(modifier = Modifier.height(32.dp))
+        }
+
+        item {
+            SystemBarSpace()
         }
     }
 }

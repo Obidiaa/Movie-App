@@ -19,27 +19,29 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.obidia.movieapp.data.utils.Resource
 import com.obidia.movieapp.domain.model.CategoryModel
 import com.obidia.movieapp.presentation.util.HomeScreenRoute
-import com.obidia.movieapp.presentation.util.Route
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-fun NavGraphBuilder.homeScreenRoute(navigate: (Route) -> Unit) {
+fun NavGraphBuilder.homeScreenRoute(navigateToDetail: (Int, NavBackStackEntry) -> Unit) {
     composable<HomeScreenRoute> {
         val viewModel: HomeViewModel = hiltViewModel()
+        val action = viewModel::homeAction
 
         HomeScreen(
             viewModel.filmState.collectAsStateWithLifecycle(),
             viewModel.listCategory.collectAsStateWithLifecycle(),
             viewModel.uiState.collectAsStateWithLifecycle(),
-            viewModel::homeAction,
-            navigate,
-            Modifier.fillMaxSize()
+            action,
+            Modifier.fillMaxSize(),
+            it,
+            navigateToDetail
         )
     }
 }
@@ -50,8 +52,9 @@ fun HomeScreen(
     listCategory: State<Resource<List<CategoryModel>>?>,
     uiState: State<HomeUiState>,
     action: (HomeAction) -> Unit,
-    navigate: (Route) -> Unit,
-    modifier: Modifier
+    modifier: Modifier,
+    navBackStackEntry: NavBackStackEntry,
+    navigateToDetail: (Int, NavBackStackEntry) -> Unit
 ) {
 
     val lazyListState = rememberLazyListState()
@@ -87,7 +90,8 @@ fun HomeScreen(
             listTop10Tv = filmUiState.value.listTop10Tv.collectAsStateWithLifecycle(),
             action = action,
             backgroundColor = uiState.value.backgroundColor,
-            navigate = navigate
+            navBackStackEntry = navBackStackEntry,
+            navigateToDetail = navigateToDetail
         )
 
         BoxTransition(isContentVisible = uiState.value.isVisibleContent)
@@ -146,9 +150,10 @@ fun BoxTransition(
         animationSpec = tween(500)
     )
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .drawBehind { drawRect(animatedColorBox) }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .drawBehind { drawRect(animatedColorBox) }
     )
 }
 

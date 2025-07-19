@@ -1,4 +1,4 @@
-package com.obidia.movieapp.presentation.home
+package com.obidia.movieapp.presentation.feature.home
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
@@ -110,7 +110,6 @@ fun HomeScreen(
             onClickTvShow = {
                 action(HomeAction.OnClickTvShow)
             },
-            navigate = navigate
         )
     }
 

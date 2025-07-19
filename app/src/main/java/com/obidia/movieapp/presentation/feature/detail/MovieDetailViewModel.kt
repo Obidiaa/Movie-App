@@ -1,4 +1,4 @@
-package com.obidia.movieapp.presentation.detail
+package com.obidia.movieapp.presentation.feature.detail
 
 import android.util.Log
 import androidx.compose.ui.graphics.Color

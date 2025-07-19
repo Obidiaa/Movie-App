@@ -1,4 +1,4 @@
-package com.obidia.movieapp.presentation.search
+package com.obidia.movieapp.presentation.feature.search
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -6,15 +6,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.text.BasicTextField
@@ -26,12 +22,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,11 +36,13 @@ import androidx.navigation.compose.composable
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.obidia.movieapp.R
-import com.obidia.movieapp.presentation.home.MovieItem
-import com.obidia.movieapp.presentation.home.MovieItemPlaceholder
+import com.obidia.movieapp.presentation.feature.home.MovieItemPlaceholder
 import com.obidia.movieapp.presentation.util.DetailScreenRoute
+import com.obidia.movieapp.presentation.util.MovieItem
 import com.obidia.movieapp.presentation.util.Route
 import com.obidia.movieapp.presentation.util.SearchScreenRoute
+import com.obidia.movieapp.presentation.util.StatusBarSpace
+import com.obidia.movieapp.presentation.util.TopBar
 
 fun NavGraphBuilder.searchScreenRoute(navigate: (Route) -> Unit) {
     composable<SearchScreenRoute> {
@@ -73,15 +69,9 @@ fun SearchScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        Spacer(
-            modifier = Modifier.height(
-                WindowInsets.statusBars
-                    .asPaddingValues()
-                    .calculateTopPadding()
-            )
-        )
+        StatusBarSpace()
 
-        TopBar()
+        TopBar(title = "Search")
 
         BasicTextField(
             cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
@@ -145,16 +135,7 @@ fun SearchScreen(
         )
 
         if (uiStat.value.textSearch.isNotEmpty()) {
-            Text(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 16.dp),
-                text = "Movies and Tv Show",
-                style = MaterialTheme.typography.titleMedium.copy(
-                    color = MaterialTheme.colorScheme.primaryContainer,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 24.sp
-                )
-            )
+            Spacer(modifier = Modifier.height(16.dp))
 
             LazyVerticalGrid(
                 columns = GridCells.Fixed(3),
@@ -166,7 +147,7 @@ fun SearchScreen(
             ) {
                 items(list.itemCount) {
                     MovieItem(
-                        item = list[it], modifier = Modifier.clickable {
+                        item = list[it], onClick = {
                             navigate(DetailScreenRoute(list[it]?.id ?: 0))
                         }
                     )
@@ -190,33 +171,11 @@ fun SearchScreen(
                         }
                     }
                 }
+
+                List(3) {
+                    item { Spacer(Modifier.height(16.dp)) }
+                }
             }
-        }
-    }
-}
-
-@Composable
-fun TopBar() {
-    Column {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Icon(
-                tint = MaterialTheme.colorScheme.onBackground,
-                imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_back),
-                contentDescription = "search"
-            )
-
-            Icon(
-                tint = MaterialTheme.colorScheme.onBackground,
-                imageVector = ImageVector.vectorResource(R.drawable.ic_bookmark),
-                contentDescription = "bookmark"
-            )
         }
     }
 }

@@ -61,7 +61,7 @@ data class MovieDetailResponse(
 ) {
     companion object {
         fun transform(response: MovieDetailResponse) = MovieDetailModel(
-            backdropPath = "https://image.tmdb.org/t/p/w500/${response.backdropPath ?: ""}",
+            backdropPath = "https://image.tmdb.org/t/p/w780/${response.backdropPath ?: ""}",
             posterPath = "https://image.tmdb.org/t/p/w500/${response.posterPath ?: ""}",
             title = response.title ?: "",
             releaseDate = response.releaseDate ?: "",

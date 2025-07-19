@@ -1,4 +1,4 @@
-package com.obidia.movieapp.presentation.bookmark
+package com.obidia.movieapp.presentation.feature.bookmark
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

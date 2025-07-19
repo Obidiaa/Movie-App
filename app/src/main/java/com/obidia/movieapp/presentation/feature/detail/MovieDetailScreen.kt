@@ -1,7 +1,6 @@
-package com.obidia.movieapp.presentation.detail
+package com.obidia.movieapp.presentation.feature.detail
 
 import android.annotation.SuppressLint
-import android.graphics.drawable.BitmapDrawable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -9,8 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -30,7 +26,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,17 +45,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import androidx.palette.graphics.Palette
-import coil.compose.AsyncImage
-import coil.compose.AsyncImagePainter
-import coil.compose.rememberAsyncImagePainter
 import com.obidia.movieapp.R
-import com.obidia.movieapp.presentation.home.toNonHardwareBitmap
+import com.obidia.movieapp.presentation.util.BaseImage
+import com.obidia.movieapp.presentation.util.ColorPellet
 import com.obidia.movieapp.presentation.util.DetailScreenRoute
+import com.obidia.movieapp.presentation.util.StatusBarSpace
+import com.obidia.movieapp.presentation.util.TopBar
 import com.obidia.movieapp.ui.theme.MovieAppTheme
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.withContext
 
 fun NavGraphBuilder.detailScreenRoute() {
     composable<DetailScreenRoute> {
@@ -80,28 +72,7 @@ fun DetailScreen(
 ) {
     val data = uiState.value.movieDetail
 
-    var imagePainter: AsyncImagePainter? = null
-
-    data?.backdropPath?.let {
-        imagePainter = rememberAsyncImagePainter(data.backdropPath)
-    }
-
-    LaunchedEffect(imagePainter) {
-        imagePainter?.let {
-            if (data?.backdropPath?.isEmpty() == true) return@LaunchedEffect
-            val bitmap =
-                (it.imageLoader.execute(it.request).drawable as? BitmapDrawable)?.bitmap?.toNonHardwareBitmap()
-                    ?: return@LaunchedEffect
-            val palette = withContext(Dispatchers.Default) {
-                bitmap.let { bitmap ->
-                    Palette.from(bitmap).generate()
-                }
-            }
-            palette.vibrantSwatch?.let { swatch ->
-                action(MovieDetailAction.OnChangeTopBarColor(Color(swatch.rgb).copy(alpha = 0.4f)))
-            }
-        }
-    }
+    ColorPellet(data?.backdropPath, action = { action(MovieDetailAction.OnChangeTopBarColor(it)) })
 
     LazyColumn(
         modifier = Modifier.fillMaxSize()
@@ -118,50 +89,20 @@ fun DetailScreen(
                         )
                     )
             ) {
-                Spacer(
-                    modifier = Modifier
-                        .height(
-                            WindowInsets.statusBars
-                                .asPaddingValues()
-                                .calculateTopPadding()
-                        )
+                StatusBarSpace()
+
+                TopBar(
+                    iconStart = ImageVector.vectorResource(R.drawable.ic_arrow_back),
+                    iconEnd = ImageVector.vectorResource(R.drawable.ic_bookmark)
                 )
-
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.Top,
-                    modifier = Modifier
-                        .fillParentMaxWidth()
-                        .height(56.dp)
-                ) {
-                    Icon(
-                        tint = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier
-                            .padding(start = 16.dp)
-                            .size(32.dp),
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_left),
-                        contentDescription = ""
-                    )
-
-                    Icon(
-                        tint = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier
-                            .padding(end = 16.dp)
-                            .size(32.dp),
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_bookmark),
-                        contentDescription = ""
-                    )
-                }
 
                 Box(
                     modifier = Modifier
                         .fillParentMaxWidth()
                         .aspectRatio(16 / 9f)
                 ) {
-                    AsyncImage(
-                        error = painterResource(id = R.drawable.img_broken),
-                        placeholder = painterResource(id = R.drawable.img_loading),
-                        model = data?.backdropPath,
+                    BaseImage(
+                        model = data?.backdropPath ?: "",
                         modifier = Modifier
                             .fillMaxSize()
                             .background(
@@ -184,8 +125,8 @@ fun DetailScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     if (!data?.posterPath.isNullOrEmpty()) {
-                        AsyncImage(
-                            model = data?.posterPath, // Construct full URL
+                        BaseImage(
+                            model = data?.posterPath ?: "",
                             contentDescription = "Movie Poster",
                             contentScale = ContentScale.FillBounds,
                             modifier = Modifier

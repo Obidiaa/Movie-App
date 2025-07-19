@@ -1,4 +1,4 @@
-package com.obidia.movieapp.presentation.home
+package com.obidia.movieapp.presentation.feature.home
 
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel

@@ -45,10 +45,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.obidia.movieapp.presentation.bookmark.bookMarkScreenRoute
-import com.obidia.movieapp.presentation.detail.detailScreenRoute
-import com.obidia.movieapp.presentation.home.homeScreenRoute
-import com.obidia.movieapp.presentation.search.searchScreenRoute
+import com.obidia.movieapp.presentation.feature.bookmark.bookMarkScreenRoute
+import com.obidia.movieapp.presentation.feature.detail.detailScreenRoute
+import com.obidia.movieapp.presentation.feature.home.homeScreenRoute
+import com.obidia.movieapp.presentation.feature.search.searchScreenRoute
 import com.obidia.movieapp.presentation.util.BookMarkScreenRoute
 import com.obidia.movieapp.presentation.util.HomeScreenRoute
 import com.obidia.movieapp.presentation.util.MainScreen

@@ -1,16 +1,17 @@
 package com.obidia.movieapp.presentation.feature.detail
 
-import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.obidia.movieapp.data.utils.Resource
+import com.obidia.movieapp.domain.model.ItemModel
 import com.obidia.movieapp.domain.model.MovieDetailModel
 import com.obidia.movieapp.domain.usecase.UseCase
 import com.obidia.movieapp.presentation.util.DetailScreenRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -29,20 +30,27 @@ class MovieDetailViewModel @Inject constructor(
         getMovieDetail(movieId = savedStateHandle.toRoute<DetailScreenRoute>().movieId)
     }
 
+    private fun checkMovieIsFavorite() = viewModelScope.launch {
+        _uiState.value.movieDetail?.id?.let { idMovie ->
+            useCase.cekSameDataUser(idMovie).collect { isFav ->
+                _uiState.update {
+                    it.copy(isFavorite = isFav)
+                }
+            }
+        }
+    }
+
     private fun getMovieDetail(movieId: Int) {
         viewModelScope.launch {
             useCase.getMovieDetail(movieId).collect { resource ->
                 when (resource) {
-                    is Resource.Error -> {
-                        Log.d("kesini error", resource.throwable.message ?: "")
-                    }
+                    is Resource.Error -> {}
 
-                    is Resource.Loading -> {
-                        Log.d("kesini loading", "loading")
-                    }
+                    is Resource.Loading -> {}
 
                     is Resource.Success<MovieDetailModel> -> {
                         _uiState.update { it.copy(movieDetail = resource.data) }
+                        checkMovieIsFavorite()
                     }
                 }
             }
@@ -56,13 +64,39 @@ class MovieDetailViewModel @Inject constructor(
                     it.copy(topBarColor = action.color)
                 }
             }
+
+            is MovieDetailAction.OnClickBookmark -> {
+                val data = _uiState.value.movieDetail
+                if (!_uiState.value.isFavorite) {
+                    viewModelScope.launch(Dispatchers.IO) {
+                        data?.let { movie ->
+                            useCase.addUser(
+                                ItemModel(
+                                    id = movie.id,
+                                    title = movie.title,
+                                    image = movie.posterPath,
+                                )
+                            )
+                        }
+                    }
+                } else {
+                    viewModelScope.launch(Dispatchers.IO) {
+                        data?.id?.let {
+                            useCase.deleteUser(it)
+                        }
+                    }
+                }
+
+                checkMovieIsFavorite()
+            }
         }
     }
 }
 
 data class MovieDetailUiState(
     val movieDetail: MovieDetailModel? = null,
-    val topBarColor: Color? = null
+    val topBarColor: Color? = null,
+    val isFavorite: Boolean = false
 ) {
     fun mock() = MovieDetailUiState(
         MovieDetailModel(
@@ -79,11 +113,12 @@ data class MovieDetailUiState(
             backdropPath = "/uNRfK14Ga8Hwfqt07vo8nvWQN1i.jpg", // This would be a full URL in a real app
             isBookmark = false,
             listRecommendation = listOf(),
-            "", "", "", ""
+            "", "", "", "", 0
         )
     )
 }
 
 sealed class MovieDetailAction {
     data class OnChangeTopBarColor(val color: Color) : MovieDetailAction()
+    data object OnClickBookmark : MovieDetailAction()
 }

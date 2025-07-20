@@ -8,6 +8,13 @@ import com.obidia.movieapp.domain.model.MovieDetailModel
 import kotlinx.coroutines.flow.Flow
 
 interface UseCase {
+    fun cekSameDataUser(idTmdb: Int): Flow<Boolean>
+
+    fun deleteUser(idTmdb: Int)
+
+    fun addUser(movie: ItemModel)
+
+    fun getAllUser(): Flow<ArrayList<ItemModel>>
 
     fun getMoviesNowPlaying(category: String?): Flow<PagingData<ItemModel>>
 

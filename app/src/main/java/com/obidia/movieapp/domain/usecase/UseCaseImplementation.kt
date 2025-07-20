@@ -12,6 +12,23 @@ import javax.inject.Inject
 class UseCaseImplementation @Inject constructor(
     private val repository: Repository
 ) : UseCase {
+
+    override fun cekSameDataUser(idTmdb: Int): Flow<Boolean> {
+        return repository.cekSameDataUser(idTmdb)
+    }
+
+    override fun deleteUser(idTmdb: Int) {
+        repository.deleteUser(idTmdb)
+    }
+
+    override fun addUser(movie: ItemModel) {
+        repository.addUser(movie)
+    }
+
+    override fun getAllUser(): Flow<ArrayList<ItemModel>> {
+        return repository.getAllUser()
+    }
+
     override fun getMoviesNowPlaying(category: String?): Flow<PagingData<ItemModel>> {
         return repository.getMoviesNowPlaying(category = category)
     }

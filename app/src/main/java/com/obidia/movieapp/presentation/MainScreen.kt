@@ -125,7 +125,7 @@ fun MainScreen(
         ) {
             homeScreenRoute(navigateToDetail = navigateToDetail)
             searchScreenRoute(navigateToDetail = navigateToDetail)
-            bookMarkScreenRoute(navigate = ::navigate)
+            bookMarkScreenRoute(navigateToDetail = navigateToDetail)
         }
     }
 }

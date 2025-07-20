@@ -2,6 +2,7 @@ package com.obidia.movieapp.presentation.util
 
 import android.graphics.drawable.BitmapDrawable
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -66,7 +67,9 @@ fun TopBar(
     modifier: Modifier = Modifier,
     title: String = "",
     iconStart: ImageVector? = null,
-    iconEnd: ImageVector? = null
+    iconEnd: ImageVector? = null,
+    iconStartOnClick: (() -> Unit)? = null,
+    iconEndOnClick: (() -> Unit)? = null
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -80,6 +83,9 @@ fun TopBar(
             iconStart?.let {
                 Spacer(modifier = Modifier.width(16.dp))
                 Icon(
+                    modifier = Modifier.clickable {
+                        iconStartOnClick?.invoke()
+                    },
                     tint = MaterialTheme.colorScheme.onBackground,
                     imageVector = it,
                     contentDescription = ""
@@ -100,8 +106,10 @@ fun TopBar(
         Row(verticalAlignment = Alignment.CenterVertically) {
             iconEnd?.let {
                 Icon(
+                    modifier = Modifier.clickable {
+                        iconEndOnClick?.invoke()
+                    },
                     tint = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier,
                     imageVector = it,
                     contentDescription = ""
                 )

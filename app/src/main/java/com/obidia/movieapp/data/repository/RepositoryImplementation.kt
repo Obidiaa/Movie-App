@@ -32,8 +32,24 @@ import javax.inject.Singleton
 
 @Singleton
 class RepositoryImplementation @Inject constructor(
-    private val remoteDataSource: RemoteDataSource
+    private val remoteDataSource: RemoteDataSource,
+    private val localDataSource: LocalDataSource
 ) : Repository {
+    override fun cekSameDataUser(idTmdb: Int): Flow<Boolean> {
+        return localDataSource.cekSameDataUser(idTmdb)
+    }
+
+    override fun deleteUser(idTmdb: Int) {
+        localDataSource.deleteUser(idTmdb)
+    }
+
+    override fun addUser(movie: ItemModel) {
+        localDataSource.addUser(movie)
+    }
+
+    override fun getAllUser(): Flow<ArrayList<ItemModel>> {
+        return localDataSource.getAllUser()
+    }
 
     override fun getMoviesNowPlaying(category: String?): Flow<PagingData<ItemModel>> {
         return Pager(

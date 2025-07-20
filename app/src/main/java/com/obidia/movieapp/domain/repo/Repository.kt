@@ -9,6 +9,14 @@ import kotlinx.coroutines.flow.Flow
 
 interface Repository {
 
+    fun cekSameDataUser(idTmdb: Int): Flow<Boolean>
+
+    fun deleteUser(idTmdb: Int)
+
+    fun addUser(movie: ItemModel)
+
+    fun getAllUser(): Flow<ArrayList<ItemModel>>
+
     fun getMoviesNowPlaying(category: String?): Flow<PagingData<ItemModel>>
 
     fun getMoviesPopular(category: String?): Flow<PagingData<ItemModel>>

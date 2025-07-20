@@ -1,7 +1,6 @@
 package com.obidia.movieapp.presentation.feature.detail
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,12 +28,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
@@ -93,8 +90,14 @@ fun DetailScreen(
                 StatusBarSpace()
 
                 TopBar(
+                    iconStartOnClick = {
+
+                    },
+                    iconEndOnClick = {
+                        action(MovieDetailAction.OnClickBookmark)
+                    },
                     iconStart = ImageVector.vectorResource(R.drawable.ic_arrow_back),
-                    iconEnd = ImageVector.vectorResource(R.drawable.ic_bookmark)
+                    iconEnd = ImageVector.vectorResource(if (uiState.value.isFavorite) R.drawable.ic_bookmark else R.drawable.ic_bookmark_outline)
                 )
 
                 Box(
@@ -297,49 +300,49 @@ fun DetailScreen(
             Spacer(modifier = Modifier.height(16.dp))
         }
 
-        item {
-            Text(
-                modifier = Modifier
-                    .fillParentMaxWidth()
-                    .padding(horizontal = 16.dp),
-                text = "You Might Also Like",
-                style = MaterialTheme.typography.titleLarge.copy(
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontSize = 20.sp,
-                )
-            )
-        }
-
-        item { Spacer(modifier = Modifier.height(12.dp)) }
-
-        item {
-            LazyRow(
-                modifier = Modifier.fillParentMaxHeight(0.3f),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                item {
-                    Spacer(modifier = Modifier.width(4.dp))
-                }
-
-                items(count = 10) {
-                    Image(
-                        painter = painterResource(id = R.drawable.img_loading),
-                        modifier = Modifier
-                            .aspectRatio(10f / 16f)
-                            .background(
-                                color = MaterialTheme.colorScheme.surfaceVariant,
-                                shape = RoundedCornerShape(4.dp)
-                            )
-                            .clip(RoundedCornerShape(4.dp)),
-                        contentDescription = "image"
-                    )
-                }
-
-                item {
-                    Spacer(modifier = Modifier.width(4.dp))
-                }
-            }
-        }
+//        item {
+//            Text(
+//                modifier = Modifier
+//                    .fillParentMaxWidth()
+//                    .padding(horizontal = 16.dp),
+//                text = "You Might Also Like",
+//                style = MaterialTheme.typography.titleLarge.copy(
+//                    color = MaterialTheme.colorScheme.onBackground,
+//                    fontSize = 20.sp,
+//                )
+//            )
+//        }
+//
+//        item { Spacer(modifier = Modifier.height(12.dp)) }
+//
+//        item {
+//            LazyRow(
+//                modifier = Modifier.fillParentMaxHeight(0.3f),
+//                horizontalArrangement = Arrangement.spacedBy(12.dp)
+//            ) {
+//                item {
+//                    Spacer(modifier = Modifier.width(4.dp))
+//                }
+//
+//                items(count = 10) {
+//                    Image(
+//                        painter = painterResource(id = R.drawable.img_loading),
+//                        modifier = Modifier
+//                            .aspectRatio(10f / 16f)
+//                            .background(
+//                                color = MaterialTheme.colorScheme.surfaceVariant,
+//                                shape = RoundedCornerShape(4.dp)
+//                            )
+//                            .clip(RoundedCornerShape(4.dp)),
+//                        contentDescription = "image"
+//                    )
+//                }
+//
+//                item {
+//                    Spacer(modifier = Modifier.width(4.dp))
+//                }
+//            }
+//        }
 
         item {
             Spacer(modifier = Modifier.height(32.dp))

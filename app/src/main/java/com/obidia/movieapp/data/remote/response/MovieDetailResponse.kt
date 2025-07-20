@@ -77,7 +77,8 @@ data class MovieDetailResponse(
             voteCount = response.voteCount.toString(),
             originalLanguage = response.originalLanguage ?: "",
             originalCountry = response.originCountry?.joinToString(",") ?: "",
-            imdbId = response.imdbId ?: ""
+            imdbId = response.imdbId ?: "",
+            id = response.id ?: 0
         )
     }
 }

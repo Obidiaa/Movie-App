@@ -38,7 +38,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavBackStackEntry
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.items
 import com.obidia.movieapp.data.utils.Resource
 import com.obidia.movieapp.domain.model.ItemModel
 import com.obidia.movieapp.presentation.util.BaseCard
@@ -439,11 +438,11 @@ fun MovieList(
         ) {
             item { Spacer(modifier = Modifier.width(0.dp)) }
 
-            items(list) { movie ->
+            items(list.itemCount) { index ->
                 MovieItem(
-                    item = movie,
+                    item = list[index],
                     onClick = {
-                        itemClick(movie?.id ?: 0)
+                        itemClick(list[index]?.id ?: 0)
                     }
                 )
             }

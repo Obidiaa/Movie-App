@@ -82,9 +82,9 @@ fun HomeScreen(
             listTvTopAiring = filmUiState.value.listTvAiringToday.collectAsLazyPagingItems(),
             listTvPopular = filmUiState.value.listTvPopular.collectAsLazyPagingItems(),
             listTvTopRated = filmUiState.value.listTvTopRated.collectAsLazyPagingItems(),
-            filmHeader = filmUiState.value.filmHeader,
-            listTop10Movie = filmUiState.value.listTop10Movie,
-            listTop10Tv = filmUiState.value.listTop10Tv,
+            filmHeader = filmUiState.value.filmHeader.collectAsStateWithLifecycle(),
+            listTop10Movie = filmUiState.value.listTop10Movie.collectAsStateWithLifecycle(),
+            listTop10Tv = filmUiState.value.listTop10Tv.collectAsStateWithLifecycle(),
             action = action,
             backgroundColor = uiState.value.backgroundColor
         )

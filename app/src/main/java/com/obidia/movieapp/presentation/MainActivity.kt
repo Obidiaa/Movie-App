@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var navController: NavController
 
     private val navigationBarItems = listOf(
-        NavigationBarItem("Home", R.drawable.ic_home_filled, HomeScreenRoute),
+        NavigationBarItem("Home", R.drawable.ic_home, HomeScreenRoute),
         NavigationBarItem("Search", R.drawable.ic_search, SearchScreenRoute),
         NavigationBarItem("Bookmark", R.drawable.ic_bookmark, BookMarkScreenRoute)
     )

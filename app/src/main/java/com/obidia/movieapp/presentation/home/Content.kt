@@ -68,9 +68,9 @@ fun Content(
     listTvTopAiring: LazyPagingItems<ItemModel>,
     listTvPopular: LazyPagingItems<ItemModel>,
     listTvTopRated: LazyPagingItems<ItemModel>,
-    filmHeader: State<Resource<ItemModel>?>,
-    listTop10Movie: State<Resource<List<ItemModel>>?>,
-    listTop10Tv: State<Resource<List<ItemModel>>?>,
+    filmHeader: Resource<ItemModel?>,
+    listTop10Movie: Resource<List<ItemModel>>,
+    listTop10Tv: Resource<List<ItemModel>>,
     action: (HomeAction) -> Unit,
     backgroundColor: Color?
 ) {
@@ -118,7 +118,7 @@ fun Content(
                         modifier = Modifier
                             .fillParentMaxWidth()
                             .fillParentMaxHeight(0.6f),
-                        filmHeader,
+                        filmHeader = filmHeader,
                         action = action
                     )
                 }
@@ -310,7 +310,8 @@ fun Content(
 @Composable
 fun FilmListTrending(
     text: String = "Movie Trending",
-    modifier: Modifier, list: State<Resource<List<ItemModel>>?>
+    modifier: Modifier,
+    list: Resource<List<ItemModel>>
 ) {
     Column(
         modifier = modifier,
@@ -330,7 +331,7 @@ fun FilmListTrending(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             item { Spacer(modifier = Modifier.width(0.dp)) }
-            when (val data = list.value) {
+            when (val data = list) {
                 is Resource.Error -> {}
                 is Resource.Loading -> {}
                 is Resource.Success -> {
@@ -350,7 +351,7 @@ fun FilmListTrending(
 @Composable
 fun HeaderMovieTrending(
     modifier: Modifier,
-    filmHeader: State<Resource<ItemModel>?>,
+    filmHeader: Resource<ItemModel?>,
     action: (HomeAction) -> Unit
 ) {
     Box(
@@ -361,7 +362,7 @@ fun HeaderMovieTrending(
     ) {
         val inverseSurface = MaterialTheme.colorScheme.inverseSurface
 
-        when (val data = filmHeader.value) {
+        when (val data = filmHeader) {
             is Resource.Error -> {}
             is Resource.Loading -> {
                 action(HomeAction.OnChangeBackgroundColor(inverseSurface))
@@ -375,7 +376,7 @@ fun HeaderMovieTrending(
 
             is Resource.Success -> {
                 val imagePainter =
-                    rememberAsyncImagePainter("https://image.tmdb.org/t/p/w500/${data.data.image}")
+                    rememberAsyncImagePainter("https://image.tmdb.org/t/p/w500/${data.data?.image}")
 
                 LaunchedEffect(imagePainter) {
                     val bitmap =
@@ -394,7 +395,7 @@ fun HeaderMovieTrending(
                     },
                     error = painterResource(id = R.drawable.img_broken),
                     placeholder = painterResource(id = R.drawable.img_loading),
-                    model = "https://image.tmdb.org/t/p/w500/${data.data.image}",
+                    model = "https://image.tmdb.org/t/p/w500/${data.data?.image}",
                     contentScale = ContentScale.FillWidth,
                     modifier = Modifier
                         .fillMaxSize()

@@ -13,13 +13,9 @@ import com.obidia.movieapp.domain.usecase.UseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -122,24 +118,21 @@ class HomeViewModel @Inject constructor(
     private fun getCategoryList() {
         viewModelScope.launch {
             useCase.getCategory()
-                .stateIn(this, SharingStarted.WhileSubscribed(5000), null)
-                .onEach {
+                .catch { _listCategory.value = Resource.Error(it) }
+                .collect {
                     _listCategory.value = it
-                }.catch {
-                    _listCategory.value = Resource.Error(it)
-                }.collect()
+                }
         }
     }
 
     private fun getCategoryListTv() {
         viewModelScope.launch {
             useCase.getCategoryTv()
-                .stateIn(this, SharingStarted.WhileSubscribed(5000), null)
-                .onEach {
-                    _listCategory.value = it
-                }.catch {
+                .catch {
                     _listCategory.value = Resource.Error(it)
-                }.collect()
+                }.collect {
+                    _listCategory.value = it
+                }
         }
     }
 
@@ -156,48 +149,39 @@ class HomeViewModel @Inject constructor(
 
     private fun getTvHeader(category: String?) {
         viewModelScope.launch {
-            useCase.getTvHeader(category).stateIn(this, SharingStarted.WhileSubscribed(5000), null)
-                .onEach {
-                    _filmState.value.filmHeader.value = it
-                }.catch {
-                    _filmState.value.filmHeader.value = Resource.Error(it)
-                }.collect()
+            useCase.getTvHeader(category)
+                .catch { error -> _filmState.update { it.copy(filmHeader = Resource.Error(error)) } }
+                .collect { result -> _filmState.update { it.copy(filmHeader = result) } }
         }
     }
 
     private fun getMovieHeader(category: String?) {
         viewModelScope.launch {
             useCase.getMovieHeader(category)
-                .stateIn(this, SharingStarted.WhileSubscribed(5000), null)
-                .onEach {
-                    _filmState.value.filmHeader.value = it
-                }.catch {
-                    _filmState.value.filmHeader.value = Resource.Error(it)
-                }.collect()
+                .catch { error -> _filmState.update { it.copy(filmHeader = Resource.Error(error)) } }
+                .collect { result -> _filmState.update { it.copy(filmHeader = result) } }
         }
     }
 
     private fun getTop10Movie() {
         viewModelScope.launch {
             useCase.getTop10Movie()
-                .stateIn(this, SharingStarted.WhileSubscribed(5000), null)
-                .onEach {
-                    _filmState.value.listTop10Movie.value = it
-                }.catch {
-                    _filmState.value.listTop10Movie.value = Resource.Error(it)
-                }.collect()
+                .catch { error ->
+                    _filmState.update { it.copy(listTop10Movie = Resource.Error(error)) }
+                }.collect { data ->
+                    _filmState.update { it.copy(listTop10Movie = data) }
+                }
         }
     }
 
     private fun getTop10Tv() {
         viewModelScope.launch {
             useCase.getTop10Tv()
-                .stateIn(this, SharingStarted.WhileSubscribed(5000), null)
-                .onEach {
-                    _filmState.value.listTop10Tv.value = it
-                }.catch {
-                    _filmState.value.listTop10Tv.value = Resource.Error(it)
-                }.collect()
+                .catch { error ->
+                   _filmState.update { it.copy(listTop10Tv = Resource.Error(error)) }
+                }.collect { data ->
+                    _filmState.update { it.copy(listTop10Tv = data) }
+                }
         }
     }
 
@@ -308,17 +292,9 @@ data class FilmUiState(
     val listTvAiringToday: Flow<PagingData<ItemModel>> = emptyFlow(),
     val listTvPopular: Flow<PagingData<ItemModel>> = emptyFlow(),
     val listTvTopRated: Flow<PagingData<ItemModel>> = emptyFlow(),
-    var filmHeader: MutableStateFlow<Resource<ItemModel>?> = MutableStateFlow(null),
-    var listTop10Movie: MutableStateFlow<Resource<List<ItemModel>>?> = MutableStateFlow(
-        Resource.Success(
-            listOf()
-        )
-    ),
-    var listTop10Tv: MutableStateFlow<Resource<List<ItemModel>>?> = MutableStateFlow(
-        Resource.Success(
-            listOf()
-        )
-    )
+    var filmHeader: Resource<ItemModel?> = Resource.Success(null),
+    var listTop10Movie: Resource<List<ItemModel>> = Resource.Success(listOf()),
+    var listTop10Tv: Resource<List<ItemModel>> = Resource.Success(listOf())
 )
 
 sealed class HomeAction {

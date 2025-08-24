@@ -19,6 +19,7 @@ Detail
 - API : https://www.themoviedb.org/
 - Material 3
 
+# License
 Copyright (C) 2025 L. Gilang Obidia Ramdhani
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at:

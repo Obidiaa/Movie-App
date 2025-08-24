@@ -1,7 +1,7 @@
 package com.obidia.movieapp.data.remote.response
 
 import com.google.gson.annotations.SerializedName
-import com.obidia.movieapp.domain.model.MovieDetailModel
+import com.obidia.movieapp.domain.model.FilmDetailModel
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -60,7 +60,7 @@ data class MovieDetailResponse(
     val voteCount: Int? = null
 ) {
     companion object {
-        fun transform(response: MovieDetailResponse) = MovieDetailModel(
+        fun transform(response: MovieDetailResponse) = FilmDetailModel(
             backdropPath = "https://image.tmdb.org/t/p/w780/${response.backdropPath ?: ""}",
             posterPath = "https://image.tmdb.org/t/p/w500/${response.posterPath ?: ""}",
             title = response.title ?: "",

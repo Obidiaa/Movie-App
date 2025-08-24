@@ -1,6 +1,6 @@
 package com.obidia.movieapp.domain.model
 
-data class MovieDetailModel(
+data class FilmDetailModel(
     val title: String,
     val originalTitle: String,
     val overview: String,
@@ -19,4 +19,10 @@ data class MovieDetailModel(
     val originalCountry: String,
     val imdbId: String,
     val id: Int,
+    val type: FilmType = FilmType.MOVIE
 )
+
+enum class FilmType {
+    MOVIE,
+    TV,
+}

@@ -20,7 +20,7 @@ import com.obidia.movieapp.data.remote.response.TvItemResponse
 import com.obidia.movieapp.data.utils.Resource
 import com.obidia.movieapp.domain.model.CategoryModel
 import com.obidia.movieapp.domain.model.ItemModel
-import com.obidia.movieapp.domain.model.MovieDetailModel
+import com.obidia.movieapp.domain.model.FilmDetailModel
 import com.obidia.movieapp.domain.repo.Repository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -286,7 +286,7 @@ class RepositoryImplementation @Inject constructor(
         ).flow
     }
 
-    override fun getMovieDetail(movieId: Int): Flow<Resource<MovieDetailModel>> {
+    override fun getMovieDetail(movieId: Int): Flow<Resource<FilmDetailModel>> {
         return flow {
             emit(Resource.Loading)
 

@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.obidia.movieapp.data.utils.Resource
 import com.obidia.movieapp.domain.model.ItemModel
-import com.obidia.movieapp.domain.model.MovieDetailModel
+import com.obidia.movieapp.domain.model.FilmDetailModel
 import com.obidia.movieapp.domain.usecase.UseCase
 import com.obidia.movieapp.presentation.util.DetailScreenRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -48,7 +48,7 @@ class MovieDetailViewModel @Inject constructor(
 
                     is Resource.Loading -> {}
 
-                    is Resource.Success<MovieDetailModel> -> {
+                    is Resource.Success<FilmDetailModel> -> {
                         _uiState.update { it.copy(movieDetail = resource.data) }
                         checkMovieIsFavorite()
                     }
@@ -94,12 +94,12 @@ class MovieDetailViewModel @Inject constructor(
 }
 
 data class MovieDetailUiState(
-    val movieDetail: MovieDetailModel? = null,
+    val movieDetail: FilmDetailModel? = null,
     val topBarColor: Color? = null,
     val isFavorite: Boolean = false
 ) {
     fun mock() = MovieDetailUiState(
-        MovieDetailModel(
+        FilmDetailModel(
             title = "The Endless Summer",
             originalTitle = "The Endless Summer",
             overview = "Bruce Brown's The Endless Summer is one of the first and most influential surf movies of all time. The film documents American surfers Mike Hynson and Robert August as they travel the world during California’s winter (which, back in 1965 was off-season for surfing) in search of the perfect wave and ultimately, an endless summer.",

@@ -4,7 +4,7 @@ import androidx.paging.PagingData
 import com.obidia.movieapp.data.utils.Resource
 import com.obidia.movieapp.domain.model.CategoryModel
 import com.obidia.movieapp.domain.model.ItemModel
-import com.obidia.movieapp.domain.model.MovieDetailModel
+import com.obidia.movieapp.domain.model.FilmDetailModel
 import kotlinx.coroutines.flow.Flow
 
 interface UseCase {
@@ -42,5 +42,5 @@ interface UseCase {
 
     fun getSearch(query: String): Flow<PagingData<ItemModel>>
 
-    fun getMovieDetail(movieId: Int): Flow<Resource<MovieDetailModel>>
+    fun getMovieDetail(movieId: Int): Flow<Resource<FilmDetailModel>>
 }

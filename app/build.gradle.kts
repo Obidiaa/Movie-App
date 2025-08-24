@@ -77,20 +77,20 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     // Coil Compose
-    implementation("io.coil-kt:coil-compose:2.6.0")
+    implementation("io.coil-kt:coil-compose:2.7.0")
 
-    implementation ("androidx.lifecycle:lifecycle-runtime-compose:2.8.5")
+    implementation ("androidx.lifecycle:lifecycle-runtime-compose:2.9.2")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
 
     // Dagger - Hilt
     implementation (libs.hilt.android)
     ksp (libs.hilt.android.compiler)
 
-    implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
+    implementation ("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     // Paging
-    implementation ("androidx.paging:paging-runtime-ktx:3.1.1")
-    implementation ("androidx.paging:paging-compose:1.0.0-alpha18")
+    implementation ("androidx.paging:paging-runtime-ktx:3.3.6")
+    implementation ("androidx.paging:paging-compose:3.3.6")
 
     // Retrofit
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
@@ -100,9 +100,9 @@ dependencies {
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
 
     // Room
-    implementation ("androidx.room:room-ktx:2.5.1")
-    ksp ("androidx.room:room-compiler:2.5.1")
-    implementation ("androidx.room:room-paging:2.5.1")
+    implementation ("androidx.room:room-ktx:2.6.1")
+    ksp ("androidx.room:room-compiler:2.6.1")
+    implementation ("androidx.room:room-paging:2.6.1")
 
     // HTTP Inspector
     debugImplementation ("com.github.chuckerteam.chucker:library:3.5.2")
@@ -118,4 +118,13 @@ dependencies {
     implementation(libs.androidx.leanback)
 
     implementation("androidx.palette:palette-ktx:1.0.0")
+
+    //sql Cipher
+    implementation("net.zetetic:android-database-sqlcipher:4.5.4")
+    implementation("androidx.sqlite:sqlite-ktx:2.5.2")
+}
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }

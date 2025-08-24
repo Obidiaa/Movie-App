@@ -1,4 +1,4 @@
-package com.obidia.movieapp.presentation.search
+package com.obidia.movieapp.presentation.feature.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

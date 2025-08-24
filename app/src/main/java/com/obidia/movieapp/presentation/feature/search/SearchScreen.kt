@@ -1,19 +1,16 @@
-package com.obidia.movieapp.presentation.search
+package com.obidia.movieapp.presentation.feature.search
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.text.BasicTextField
@@ -25,34 +22,35 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.obidia.movieapp.R
-import com.obidia.movieapp.presentation.home.MovieItem
-import com.obidia.movieapp.presentation.home.MovieItemPlaceholder
-import com.obidia.movieapp.presentation.util.Route
+import com.obidia.movieapp.presentation.feature.home.MovieItemPlaceholder
+import com.obidia.movieapp.presentation.util.MovieItem
 import com.obidia.movieapp.presentation.util.SearchScreenRoute
-import com.obidia.movieapp.presentation.util.robotoFamily
+import com.obidia.movieapp.presentation.util.StatusBarSpace
+import com.obidia.movieapp.presentation.util.TopBar
 
-fun NavGraphBuilder.searchScreenRoute(navigate: (Route) -> Unit) {
+fun NavGraphBuilder.searchScreenRoute(navigateToDetail: (Int, NavBackStackEntry) -> Unit) {
     composable<SearchScreenRoute> {
         val viewModel: SearchViewModel = hiltViewModel()
         SearchScreen(
             viewModel.uiState.collectAsStateWithLifecycle(),
-            viewModel::searchEvents
+            viewModel::searchEvents,
+            navigateToDetail,
+            it
         )
     }
 }
@@ -61,22 +59,27 @@ fun NavGraphBuilder.searchScreenRoute(navigate: (Route) -> Unit) {
 @Composable
 fun SearchScreen(
     uiStat: State<SearchUiStat>,
-    action: (SearchEvents) -> Unit
+    action: (SearchEvents) -> Unit,
+    navigateToDetail: (Int, NavBackStackEntry) -> Unit,
+    navBackStackEntry: NavBackStackEntry
 ) {
     val list = uiStat.value.listSearch.collectAsLazyPagingItems()
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        Spacer(
-            modifier = Modifier.height(
-                WindowInsets.statusBars
-                    .asPaddingValues()
-                    .calculateTopPadding()
-            )
-        )
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        StatusBarSpace()
 
-        TopBar()
+        TopBar(title = "Search")
 
         BasicTextField(
+            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+            textStyle = MaterialTheme.typography.bodyMedium.copy(
+                fontSize = 20.sp,
+                color = MaterialTheme.colorScheme.primary
+            ),
             modifier = Modifier.fillMaxWidth(),
             value = uiStat.value.textSearch,
             onValueChange = {
@@ -85,10 +88,10 @@ fun SearchScreen(
             decorationBox = { innerTextField ->
                 OutlinedTextFieldDefaults.DecorationBox(
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = MaterialTheme.colorScheme.inverseSurface,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.inverseSurface,
-                        unfocusedContainerColor = MaterialTheme.colorScheme.inverseSurface,
-                        focusedContainerColor = MaterialTheme.colorScheme.inverseSurface,
+                        focusedBorderColor = MaterialTheme.colorScheme.surfaceContainer,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.surfaceContainer,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                        focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
                     ),
                     value = uiStat.value.textSearch,
                     innerTextField = innerTextField,
@@ -100,10 +103,15 @@ fun SearchScreen(
                         Text(
                             modifier = Modifier.fillMaxWidth(),
                             text = "Search Movie",
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                fontSize = 20.sp,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
                         )
                     },
                     leadingIcon = {
                         Icon(
+                            tint = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.padding(start = 8.dp),
                             imageVector = ImageVector.vectorResource(R.drawable.ic_search),
                             contentDescription = ""
@@ -112,6 +120,7 @@ fun SearchScreen(
                     trailingIcon = {
                         if (uiStat.value.textSearch.isNotEmpty()) {
                             Icon(
+                                tint = MaterialTheme.colorScheme.onSurface,
                                 modifier = Modifier
                                     .padding(end = 8.dp)
                                     .clickable {
@@ -122,34 +131,12 @@ fun SearchScreen(
                             )
                         }
                     },
-                    container = {
-                        OutlinedTextFieldDefaults.ContainerBox(
-                            shape = RectangleShape,
-                            enabled = true,
-                            isError = false,
-                            interactionSource = remember { MutableInteractionSource() },
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = MaterialTheme.colorScheme.inverseSurface,
-                                unfocusedBorderColor = MaterialTheme.colorScheme.inverseSurface,
-                                unfocusedContainerColor = MaterialTheme.colorScheme.inverseSurface,
-                                focusedContainerColor = MaterialTheme.colorScheme.inverseSurface,
-                            )
-                        )
-                    }
                 )
             }
         )
 
         if (uiStat.value.textSearch.isNotEmpty()) {
-            Text(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 16.dp),
-                text = "Movies and Tv Show",
-                color = MaterialTheme.colorScheme.onSecondary,
-                fontFamily = robotoFamily,
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp
-            )
+            Spacer(modifier = Modifier.height(16.dp))
 
             LazyVerticalGrid(
                 columns = GridCells.Fixed(3),
@@ -160,7 +147,11 @@ fun SearchScreen(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(list.itemCount) {
-                    MovieItem(item = list[it])
+                    MovieItem(
+                        item = list[it], onClick = {
+                            navigateToDetail(list[it]?.id ?: 0, navBackStackEntry)
+                        }
+                    )
                 }
 
                 list.apply {
@@ -175,39 +166,17 @@ fun SearchScreen(
 
                         loadState.refresh is LoadState.Error || loadState.append is LoadState.Error -> {
                             Log.d(
-                                "kesini error",
+                                "this it error",
                                 (loadState.refresh as LoadState.Error).error.message ?: ""
                             )
                         }
                     }
                 }
+
+                List(3) {
+                    item { Spacer(Modifier.height(16.dp)) }
+                }
             }
-        }
-    }
-}
-
-@Composable
-fun TopBar() {
-    Column {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Icon(
-                tint = MaterialTheme.colorScheme.surfaceTint,
-                imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_back),
-                contentDescription = "search"
-            )
-
-            Icon(
-                tint = MaterialTheme.colorScheme.surfaceTint,
-                imageVector = ImageVector.vectorResource(R.drawable.ic_bookmark),
-                contentDescription = "bookmark"
-            )
         }
     }
 }

@@ -4,6 +4,7 @@ import androidx.paging.PagingData
 import com.obidia.movieapp.data.utils.Resource
 import com.obidia.movieapp.domain.model.CategoryModel
 import com.obidia.movieapp.domain.model.ItemModel
+import com.obidia.movieapp.domain.model.FilmDetailModel
 import com.obidia.movieapp.domain.repo.Repository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -11,6 +12,23 @@ import javax.inject.Inject
 class UseCaseImplementation @Inject constructor(
     private val repository: Repository
 ) : UseCase {
+
+    override fun cekSameDataUser(idTmdb: Int): Flow<Boolean> {
+        return repository.cekSameDataUser(idTmdb)
+    }
+
+    override fun deleteUser(idTmdb: Int) {
+        repository.deleteUser(idTmdb)
+    }
+
+    override fun addUser(movie: ItemModel) {
+        repository.addUser(movie)
+    }
+
+    override fun getAllUser(): Flow<ArrayList<ItemModel>> {
+        return repository.getAllUser()
+    }
+
     override fun getMoviesNowPlaying(category: String?): Flow<PagingData<ItemModel>> {
         return repository.getMoviesNowPlaying(category = category)
     }
@@ -61,5 +79,9 @@ class UseCaseImplementation @Inject constructor(
 
     override fun getSearch(query: String): Flow<PagingData<ItemModel>> {
         return repository.getSearch(query)
+    }
+
+    override fun getMovieDetail(movieId: Int): Flow<Resource<FilmDetailModel>> {
+        return repository.getMovieDetail(movieId)
     }
 }

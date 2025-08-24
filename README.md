@@ -2,11 +2,11 @@
 
 This is an example of an application for show film information, called Jet Movie
 
-Home
+Home Screen
 
 https://github.com/user-attachments/assets/2a5df018-8538-4fd8-b329-6fcc2321adec
 
-Detail
+Detail Screen
 
 <img width="367" height="837" alt="detail screen" src="https://github.com/user-attachments/assets/561f5cc3-a5d1-4be1-8f18-c1345aeb2dcc" />
 

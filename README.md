@@ -18,6 +18,7 @@ Detail Screen
 - Http Client with Retrofit
 - API : https://www.themoviedb.org/
 - Material 3
+- Room Database for local data
 
 # License
 Copyright (C) 2025 L. Gilang Obidia Ramdhani

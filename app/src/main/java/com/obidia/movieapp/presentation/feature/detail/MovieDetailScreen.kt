@@ -87,35 +87,39 @@ fun DetailScreen(
                         )
                     )
             ) {
-                StatusBarSpace()
 
-                TopBar(
-                    iconStartOnClick = {
-
-                    },
-                    iconEndOnClick = {
-                        action(MovieDetailAction.OnClickBookmark)
-                    },
-                    iconStart = ImageVector.vectorResource(R.drawable.ic_arrow_back),
-                    iconEnd = ImageVector.vectorResource(if (uiState.value.isFavorite) R.drawable.ic_bookmark else R.drawable.ic_bookmark_outline)
-                )
-
-                Box(
-                    modifier = Modifier
-                        .fillParentMaxWidth()
-                        .aspectRatio(16 / 9f)
-                ) {
-                    BaseImage(
-                        model = data?.backdropPath ?: "",
+                Box {
+                    Box(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .background(
-                                color = MaterialTheme.colorScheme.surfaceVariant,
-                                shape = RoundedCornerShape(4.dp)
-                            ),
-                        contentDescription = "",
-                        contentScale = ContentScale.FillBounds
-                    )
+                            .fillParentMaxWidth()
+                            .aspectRatio(16 / 12f)
+                    ) {
+                        BaseImage(
+                            model = data?.backdropPath ?: "",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(
+                                    color = MaterialTheme.colorScheme.surfaceVariant,
+                                    shape = RoundedCornerShape(4.dp)
+                                ),
+                            contentDescription = "",
+                            contentScale = ContentScale.FillBounds
+                        )
+                    }
+
+                    Column {
+                        StatusBarSpace()
+                        TopBar(
+                            iconStartOnClick = {
+
+                            },
+                            iconEndOnClick = {
+                                action(MovieDetailAction.OnClickBookmark)
+                            },
+                            iconStart = ImageVector.vectorResource(R.drawable.ic_arrow_back),
+                            iconEnd = ImageVector.vectorResource(if (uiState.value.isFavorite) R.drawable.ic_bookmark else R.drawable.ic_bookmark_outline)
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))

@@ -1,41 +1,53 @@
 package com.obidia.movieapp.ui.theme
 import androidx.compose.ui.graphics.Color
 
-val primaryDark = Color(0xFFFFB4A8)
-val onPrimaryDark = Color(0xFF690001)
-val primaryContainerDark = Color(0xFFDF0707)
-val onPrimaryContainerDark = Color(0xFFFFF0EE)
-val secondaryDark = Color(0xFFFFB4A8)
-val onSecondaryDark = Color(0xFF690001)
-val secondaryContainerDark = Color(0xFF8E140C)
-val onSecondaryContainerDark = Color(0xFFFF9A8B)
-val tertiaryDark = Color(0xFFFDBA59)
-val onTertiaryDark = Color(0xFF452B00)
-val tertiaryContainerDark = Color(0xFF996400)
-val onTertiaryContainerDark = Color(0xFFFFF1E4)
-val errorDark = Color(0xFFFFB4AB)
-val onErrorDark = Color(0xFF690005)
-val errorContainerDark = Color(0xFF93000A)
-val onErrorContainerDark = Color(0xFFFFDAD6)
-val backgroundDark = Color(0xFF200F0C)
-val onBackgroundDark = Color(0xFFFEDAD5)
-val surfaceDark = Color(0xFF200F0C)
-val onSurfaceDark = Color(0xFFFEDAD5)
-val surfaceVariantDark = Color(0xFF5E3F3A)
-val onSurfaceVariantDark = Color(0xFFE9BCB5)
-val outlineDark = Color(0xFFAF8781)
-val outlineVariantDark = Color(0xFF5E3F3A)
+// Netflix-inspired Dark Theme Palette
+val primaryDark = Color(0xFFE50914)       // Netflix Red
+val onPrimaryDark = Color(0xFFFFFFFF)     // White on Red
+val primaryContainerDark = Color(0xFFB20710) // Darker Red container
+val onPrimaryContainerDark = Color(0xFFFFFFFF)
+
+val secondaryDark = Color(0xFFB3B3B3)     // Light Gray
+val onSecondaryDark = Color(0xFF000000)   // Black on Gray
+val secondaryContainerDark = Color(0xFF2A2A2A) // Medium Dark Gray
+val onSecondaryContainerDark = Color(0xFFFFFFFF)
+
+val tertiaryDark = Color(0xFF737373)      // Mid Gray
+val onTertiaryDark = Color(0xFFFFFFFF)
+val tertiaryContainerDark = Color(0xFF404040)
+val onTertiaryContainerDark = Color(0xFFFFFFFF)
+
+val errorDark = Color(0xFFCF6679)         // Material default error
+val onErrorDark = Color(0xFF000000)
+val errorContainerDark = Color(0xFF8C1D1D)
+val onErrorContainerDark = Color(0xFFFFFFFF)
+
+val backgroundDark = Color(0xFF000000)    // Pure Black Background
+val onBackgroundDark = Color(0xFFFFFFFF)  // White Text
+
+val surfaceDark = Color(0xFF121212)       // Dark Gray Surface
+val onSurfaceDark = Color(0xFFFFFFFF)
+
+val surfaceVariantDark = Color(0xFF2A2A2A)
+val onSurfaceVariantDark = Color(0xFFB3B3B3)
+
+val outlineDark = Color(0xFF404040)
+val outlineVariantDark = Color(0xFF666666)
+
 val scrimDark = Color(0xFF000000)
-val inverseSurfaceDark = Color(0xFFFEDAD5)
-val inverseOnSurfaceDark = Color(0xFF412B28)
-val inversePrimaryDark = Color(0xFFC00003)
-val surfaceDimDark = Color(0xFF200F0C)
-val surfaceBrightDark = Color(0xFF4A3430)
-val surfaceContainerLowestDark = Color(0xFF1A0907)
-val surfaceContainerLowDark = Color(0xFF2A1714)
-val surfaceContainerDark = Color(0xFF2E1A18)
-val surfaceContainerHighDark = Color(0xFF3A2521)
-val surfaceContainerHighestDark = Color(0xFF462F2C)
+
+val inverseSurfaceDark = Color(0xFFFFFFFF)
+val inverseOnSurfaceDark = Color(0xFF000000)
+val inversePrimaryDark = Color(0xFFE50914)
+
+val surfaceDimDark = Color(0xFF0A0A0A)
+val surfaceBrightDark = Color(0xFF1E1E1E)
+
+val surfaceContainerLowestDark = Color(0xFF0A0A0A)
+val surfaceContainerLowDark = Color(0xFF121212)
+val surfaceContainerDark = Color(0xFF1E1E1E)
+val surfaceContainerHighDark = Color(0xFF2A2A2A)
+val surfaceContainerHighestDark = Color(0xFF333333)
 
 
 

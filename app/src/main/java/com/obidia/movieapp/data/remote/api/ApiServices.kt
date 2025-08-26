@@ -1,11 +1,13 @@
 package com.obidia.movieapp.data.remote.api
 
 import com.obidia.movieapp.data.remote.response.CategoryListResponse
+import com.obidia.movieapp.data.remote.response.MovieDetailResponse
 import com.obidia.movieapp.data.remote.response.MovieListResponse
 import com.obidia.movieapp.data.remote.response.SearchListResponse
 import com.obidia.movieapp.data.remote.response.TvListResponse
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiServices {
@@ -112,4 +114,10 @@ interface ApiServices {
         @Query("page") page: Int,
         @Query("language") language: String = "en-US"
     ): SearchListResponse
+
+    @GET("movie/{movie_id}")
+    suspend fun getMovieDetail(
+        @Path("movie_id") movieId: Int,
+        @Query("language") language: String = "en-US"
+    ): Response<MovieDetailResponse>
 }

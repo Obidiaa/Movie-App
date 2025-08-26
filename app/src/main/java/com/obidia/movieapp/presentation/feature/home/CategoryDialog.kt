@@ -1,4 +1,4 @@
-package com.obidia.movieapp.presentation.home
+package com.obidia.movieapp.presentation.feature.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,7 +23,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -35,7 +34,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.obidia.movieapp.R
 import com.obidia.movieapp.data.utils.Resource
 import com.obidia.movieapp.domain.model.CategoryModel
-import com.obidia.movieapp.presentation.util.robotoFamily
+import com.obidia.movieapp.ui.theme.robotoFamily
 
 
 @Composable
@@ -55,10 +54,8 @@ fun CategoryDialog(
         onDismissRequest = {
             isShow = false
             onDismissRequest.invoke()
-        },
-        properties = DialogProperties(
-            dismissOnClickOutside = true,
-            usePlatformDefaultWidth = false
+        }, properties = DialogProperties(
+            dismissOnClickOutside = true, usePlatformDefaultWidth = false
         )
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -71,7 +68,7 @@ fun CategoryDialog(
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.8f)),
+                            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.8f)),
                         verticalArrangement = Arrangement.spacedBy(36.dp)
                     ) {
                         item {
@@ -80,22 +77,24 @@ fun CategoryDialog(
 
                         items(items = list.data) {
                             Text(
-                                textAlign = TextAlign.Center,
                                 text = it.name,
-                                fontSize = 18.sp,
-                                fontFamily = robotoFamily,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                style = MaterialTheme.typography.titleLarge.copy(
+                                    textAlign = TextAlign.Center,
+                                    fontSize = 18.sp,
+                                    fontFamily = robotoFamily,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    fontWeight = FontWeight.Medium,
+                                ),
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .clickable {
                                         onClickCategory.invoke(it.name, it.id)
                                     },
-                                fontWeight = FontWeight.Medium
                             )
                         }
 
                         item {
-                            Spacer(modifier = Modifier.height(120.dp))
+                            Spacer(modifier = Modifier.height(160.dp))
                         }
                     }
 
@@ -106,10 +105,11 @@ fun CategoryDialog(
                         },
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
-                            .padding(bottom = 56.dp),
-                        containerColor = Color.White
+                            .padding(bottom = 100.dp),
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
                     ) {
                         Icon(
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
                             imageVector = ImageVector.vectorResource(R.drawable.ic_close),
                             contentDescription = ""
                         )

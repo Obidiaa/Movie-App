@@ -1,4 +1,4 @@
-package com.obidia.movieapp.util
+package com.obidia.movieapp
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

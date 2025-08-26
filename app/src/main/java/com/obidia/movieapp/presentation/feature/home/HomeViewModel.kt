@@ -1,8 +1,9 @@
-package com.obidia.movieapp.presentation.home
+package com.obidia.movieapp.presentation.feature.home
 
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavBackStackEntry
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
@@ -285,6 +286,12 @@ class HomeViewModel @Inject constructor(
                     backgroundColor = action.color
                 )
             }
+
+            is HomeAction.OnSetNavBack -> {
+                _uiState.value = uiState.value.copy(
+                    navBackStackEntry = action.navBackStackEntry
+                )
+            }
         }
     }
 }
@@ -298,7 +305,8 @@ data class HomeUiState(
     val isShowCategoryDialog: Boolean = false,
     val isVisibleContent: Boolean = true,
     val categoryId: String? = null,
-    val backgroundColor: Color? = null
+    val backgroundColor: Color? = null,
+    val navBackStackEntry: NavBackStackEntry? = null
 )
 
 data class FilmUiState(
@@ -345,4 +353,6 @@ sealed class HomeAction {
     data object OnLoadFilmByCategory : HomeAction()
 
     data class OnChangeBackgroundColor(val color: Color) : HomeAction()
+
+    data class OnSetNavBack(val navBackStackEntry: NavBackStackEntry) : HomeAction()
 }

@@ -44,9 +44,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @Composable
-fun StatusBarSpace() {
+fun StatusBarSpace(modifier: Modifier = Modifier) {
     Spacer(
-        modifier = Modifier.height(
+        modifier = modifier.height(
             WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
         )
     )

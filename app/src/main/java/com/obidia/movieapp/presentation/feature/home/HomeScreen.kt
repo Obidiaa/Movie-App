@@ -12,11 +12,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.coerceIn
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavBackStackEntry
@@ -59,6 +70,7 @@ fun HomeScreen(
 
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
+    val density = LocalDensity.current.density
 
     LaunchedEffect(lazyListState) {
         snapshotFlow {
@@ -73,7 +85,17 @@ fun HomeScreen(
         }
     }
 
-    Box(modifier = modifier) {
+    val nestedScrollConnection = remember {
+        object : NestedScrollConnection {
+            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                val offset = uiState.value.categoryOffset + (available.y / density / 2).dp
+                action(HomeAction.SetCategoryOffset(offset.coerceIn((-56).dp, 0.dp)))
+                return Offset(0f, 0f)
+            }
+        }
+    }
+
+    Box(modifier = modifier.nestedScroll(nestedScrollConnection)) {
         Content(
             contentVisible = uiState.value.isVisibleContent,
             isMovie = uiState.value.isMovie,
@@ -98,7 +120,6 @@ fun HomeScreen(
 
         TopAppBar(
             uiState.value.isFirstItemVisible,
-            uiState.value.isTopBarVisible,
             uiState.value.isTvShow,
             uiState.value.isMovie,
             uiState.value.categoryName,
@@ -114,6 +135,7 @@ fun HomeScreen(
             onClickTvShow = {
                 action(HomeAction.OnClickTvShow)
             },
+            offset = uiState.value.categoryOffset,
         )
     }
 
